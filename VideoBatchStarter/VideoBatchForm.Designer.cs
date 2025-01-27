@@ -60,7 +60,7 @@ namespace VideoBatchApp
             DockPanel.BackColor = Colors.MontereyDark;
             DockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             DockPanel.Location = new System.Drawing.Point(0, 35);
-            DockPanel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            DockPanel.Margin = new Padding(4, 5, 4, 5);
             DockPanel.Name = "DockPanel";
             DockPanel.Size = new System.Drawing.Size(1983, 1174);
             DockPanel.TabIndex = 0;
@@ -75,7 +75,7 @@ namespace VideoBatchApp
  statusLabel});
             statusStrip.Location = new System.Drawing.Point(0, 1209);
             statusStrip.Name = "statusStrip";
-            statusStrip.Padding = new System.Windows.Forms.Padding(0, 9, 0, 5);
+            statusStrip.Padding = new Padding(5, 0, 0, 0);
             statusStrip.Size = new System.Drawing.Size(1983, 30);
             statusStrip.SizingGrip = false;
             statusStrip.TabIndex = 0;
@@ -84,7 +84,7 @@ namespace VideoBatchApp
             // statusLabel
             // 
             statusLabel.AutoSize = false;
-            statusLabel.Margin = new System.Windows.Forms.Padding(1, 0, 50, 0);
+            statusLabel.Margin = new Padding(0, 0, 0, 0);
             statusLabel.Name = "statusLabel";
             statusLabel.Size = new Size(100, 41);
             statusLabel.Text = "Ready";
