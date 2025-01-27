@@ -35,29 +35,25 @@ namespace VideoBatchApp
             windowPanel1 = new AcrylicUI.Controls.WindowPanel();
             DockPanel = new AcrylicUI.Docking.DockPanel();
             statusStrip = new AcrylicUI.Controls.AcrylicStatusStrip();
-            statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            statusLabel = new ToolStripStatusLabel();
             statusTimer = new System.Windows.Forms.Timer(components);
-
+            windowPanel1.SuspendLayout();
             statusStrip.SuspendLayout();
-            windowPanel1.SuspendLayout();   
-
             SuspendLayout();
             // 
             // windowPanel1
             // 
-            windowPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            windowPanel1.Controls.Add(DockPanel);
+            windowPanel1.Controls.Add(statusStrip);
+            windowPanel1.Dock = DockStyle.Fill;
             windowPanel1.Icon = null;
             windowPanel1.IsAcrylic = false;
             windowPanel1.Location = new System.Drawing.Point(0, 0);
             windowPanel1.Name = "windowPanel1";
-            windowPanel1.ProfileFeature = false;
             windowPanel1.RoundCorners = false;
             windowPanel1.SectionHeader = null;
             windowPanel1.Size = new System.Drawing.Size(800, 450);
             windowPanel1.TabIndex = 0;
-            windowPanel1.Controls.Add(DockPanel);
-            windowPanel1.Controls.Add(statusStrip);
-
             // 
             // DockPanel
             // 
@@ -84,23 +80,21 @@ namespace VideoBatchApp
             statusStrip.SizingGrip = false;
             statusStrip.TabIndex = 0;
             statusStrip.Text = "statusStrip";
-            
             // 
             // statusLabel
             // 
             statusLabel.AutoSize = false;
             statusLabel.Margin = new System.Windows.Forms.Padding(1, 0, 50, 0);
             statusLabel.Name = "statusLabel";
-            statusLabel.Size = new System.Drawing.Size(800, 24);
+            statusLabel.Size = new Size(100, 41);
             statusLabel.Text = "Ready";
-            statusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            statusLabel.BackColor = Color.Red;
+            statusLabel.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // statusTimer
             // 
             statusTimer.Interval = 10000;
             // 
-            // AcrylicBorderlessForm
+            // VideoBatchForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
@@ -109,13 +103,10 @@ namespace VideoBatchApp
             Location = new System.Drawing.Point(0, 0);
             Name = "VideoBatchForm";
             Text = "Form5";
+            windowPanel1.ResumeLayout(false);
             statusStrip.ResumeLayout(false);
             statusStrip.PerformLayout();
-            windowPanel1.ResumeLayout(false); 
-            windowPanel1.PerformLayout(); 
             ResumeLayout(false);
-            //PerformLayout();
-
         }
 
         #endregion
