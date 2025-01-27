@@ -37,6 +37,7 @@ namespace VideoBatchApp
             statusStrip = new AcrylicUI.Controls.AcrylicStatusStrip();
             statusLabel = new ToolStripStatusLabel();
             statusTimer = new System.Windows.Forms.Timer(components);
+            statusLblVersion = new ToolStripStatusLabel();
             windowPanel1.SuspendLayout();
             statusStrip.SuspendLayout();
             SuspendLayout();
@@ -48,11 +49,12 @@ namespace VideoBatchApp
             windowPanel1.Dock = DockStyle.Fill;
             windowPanel1.Icon = null;
             windowPanel1.IsAcrylic = false;
-            windowPanel1.Location = new System.Drawing.Point(0, 0);
+            windowPanel1.Location = new Point(0, 0);
+            windowPanel1.Margin = new Padding(0, 0,0, 0);
             windowPanel1.Name = "windowPanel1";
             windowPanel1.RoundCorners = false;
             windowPanel1.SectionHeader = null;
-            windowPanel1.Size = new System.Drawing.Size(800, 450);
+            windowPanel1.Size = new Size(800, 450);
             windowPanel1.TabIndex = 0;
             // 
             // DockPanel
@@ -72,7 +74,7 @@ namespace VideoBatchApp
             statusStrip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             statusStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
- statusLabel});
+ statusLabel,statusLblVersion});
             statusStrip.Location = new System.Drawing.Point(0, 1209);
             statusStrip.Name = "statusStrip";
             statusStrip.Padding = new Padding(5, 0, 0, 0);
@@ -84,7 +86,7 @@ namespace VideoBatchApp
             // statusLabel
             // 
             statusLabel.AutoSize = false;
-            statusLabel.Margin = new Padding(0, 0, 0, 0);
+            statusLabel.Margin = new Padding(0);
             statusLabel.Name = "statusLabel";
             statusLabel.Size = new Size(400, 41);
             statusLabel.Text = "Ready";
@@ -93,6 +95,15 @@ namespace VideoBatchApp
             // statusTimer
             // 
             statusTimer.Interval = 10000;
+            // 
+            // statusLblVersion
+            // 
+            statusLblVersion.AutoSize = false;
+            statusLblVersion.Name = "statusLblVersion";
+            statusLblVersion.Size = new Size(1886, 75);
+            statusLblVersion.Spring = true;
+            statusLblVersion.Text = "version:";
+            statusLblVersion.TextAlign = ContentAlignment.MiddleRight;
             // 
             // VideoBatchForm
             // 
@@ -116,7 +127,6 @@ namespace VideoBatchApp
         private AcrylicUI.Controls.AcrylicStatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel statusLabel;
         private System.Windows.Forms.Timer statusTimer;
-
-
+        private ToolStripStatusLabel statusLblVersion;
     }
 }

@@ -2,7 +2,8 @@
   
   <PropertyGroup>
     <Version>1.0.0-beta</Version>
-    
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+
     <!--  Change WinExe to Exe and Uncomment DisableWinExeOutputInference to see Console Logs-->
     <OutputType>WinExe</OutputType>
     <!--<OutputType>Exe</OutputType>

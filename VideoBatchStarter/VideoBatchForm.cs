@@ -27,12 +27,10 @@ namespace VideoBatchApp
         private void DisplayVersion()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var assemblyVersion = assembly.GetName().Version;
-            Console.WriteLine($"Version: {assemblyVersion}");
-            var informationVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+            var informationVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion;
             Console.WriteLine($"InformationalVersion  {informationVersion}");
 
-            statusLabel.Text = informationVersion;
+            statusLblVersion.Text = $"v:  {informationVersion}";
         }
 
 
