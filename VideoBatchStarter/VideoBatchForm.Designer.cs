@@ -1,9 +1,9 @@
 ﻿
 using AcrylicUI.Resources;
 
-namespace AcrylicControlLibraryTemplates
+namespace VideoBatchApp
 {
-    partial class VideoBatchStarterUI
+    partial class VideoBatchForm
     {
         /// <summary>
         /// Required designer variable.

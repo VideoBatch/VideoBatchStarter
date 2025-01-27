@@ -4,9 +4,9 @@ using AcrylicUI.Controls;
 using AcrylicUI.Platform.Windows;
 using AcrylicUI.Resources;
 
-namespace AcrylicControlLibraryTemplates
+namespace VideoBatchApp
 {
-    public partial class VideoBatchStarterUI : AcrylicUI.Forms.AcrylicForm
+    public partial class VideoBatchForm : AcrylicUI.Forms.AcrylicForm
     {
 
         #region Fields for Borderless Windows
@@ -16,7 +16,7 @@ namespace AcrylicControlLibraryTemplates
         #endregion
 
 
-        public VideoBatchStarterUI()
+        public VideoBatchForm()
         {
             InitializeComponent();
             // Make sure you set this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
@@ -58,14 +58,14 @@ namespace AcrylicControlLibraryTemplates
         }
         private void HookEvents()
         {
-            this.Load += new System.EventHandler(this.MainWindow_Load);
+            this.Load += new EventHandler(MainWindow_Load!);
         }
 
-        private void MainWindow_Load(object sender, EventArgs e)
+        private void MainWindow_Load(object? sender, EventArgs e)
         {
             var dpiScale = IconFactory.GetDpiScale(this.Handle);
             this.windowPanel1.Icon = new IconFactory(IconFactory.GetDpiScale(Handle)).BitmapFromSvg(Icons.Cube_16x_svg);
-            this.windowPanel1.SectionHeader = "CT Studio";
+            this.windowPanel1.SectionHeader = "VideoBatch";
         }
 
 
