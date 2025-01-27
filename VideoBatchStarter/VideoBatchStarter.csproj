@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <!--  Change WinExe to Exe and Uncomment DisableWinExeOutputInference to see Console Logs-->
-    <!--<OutputType>WinExe</OutputType>-->
-    <OutputType>Exe</OutputType>
-    <DisableWinExeOutputInference>true</DisableWinExeOutputInference>
+    <OutputType>WinExe</OutputType>
+    <!--<OutputType>Exe</OutputType>
+    <DisableWinExeOutputInference>true</DisableWinExeOutputInference>-->
 
     <TargetFramework>net9.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
