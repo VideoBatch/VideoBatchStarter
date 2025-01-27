@@ -9,13 +9,7 @@ namespace VideoBatchApp
     public partial class VideoBatchForm : AcrylicUI.Forms.AcrylicForm
     {
 
-        #region Fields for Borderless Windows
-        private int borderSize = 0;
-        private bool _flatBorder = true;
-        private Size _restoreSize;
-        #endregion
-
-
+       
         public VideoBatchForm()
         {
             InitializeComponent();
@@ -27,6 +21,7 @@ namespace VideoBatchApp
 
 
         }
+
 
         #region fix FormWindowState changes
 
@@ -256,5 +251,13 @@ namespace VideoBatchApp
                                                          uint cbAttribute);
 
         #endregion
+
+        #region Fields for Borderless Windows
+        private int borderSize = 0;
+        private bool _flatBorder = true;
+        private Size _restoreSize;
+        #endregion
+
+
     }
 }

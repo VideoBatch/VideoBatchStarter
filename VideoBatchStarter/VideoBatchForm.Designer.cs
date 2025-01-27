@@ -86,7 +86,7 @@ namespace VideoBatchApp
             statusLabel.AutoSize = false;
             statusLabel.Margin = new Padding(0, 0, 0, 0);
             statusLabel.Name = "statusLabel";
-            statusLabel.Size = new Size(100, 41);
+            statusLabel.Size = new Size(400, 41);
             statusLabel.Text = "Ready";
             statusLabel.TextAlign = ContentAlignment.MiddleLeft;
             // 
