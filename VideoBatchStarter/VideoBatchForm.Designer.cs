@@ -52,7 +52,7 @@ namespace VideoBatchApp
             windowPanel1.Name = "windowPanel1";
             windowPanel1.RoundCorners = false;
             windowPanel1.SectionHeader = null;
-            windowPanel1.Size = new System.Drawing.Size(800, 450);
+            windowPanel1.Size = new Size(800, 450);
             windowPanel1.TabIndex = 0;
             // 
             // DockPanel
