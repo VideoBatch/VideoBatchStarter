@@ -39,6 +39,8 @@ namespace VideoBatchApp
             statusTimer = new System.Windows.Forms.Timer(components);
 
             statusStrip.SuspendLayout();
+            windowPanel1.SuspendLayout();   
+
             SuspendLayout();
             // 
             // windowPanel1
@@ -109,6 +111,8 @@ namespace VideoBatchApp
             Text = "Form5";
             statusStrip.ResumeLayout(false);
             statusStrip.PerformLayout();
+            windowPanel1.ResumeLayout(false); 
+            windowPanel1.PerformLayout(); 
             ResumeLayout(false);
             //PerformLayout();
 
