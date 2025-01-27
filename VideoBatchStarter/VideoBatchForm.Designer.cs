@@ -54,7 +54,7 @@ namespace VideoBatchApp
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.windowPanel1);
             this.Location = new System.Drawing.Point(0, 0);
-            this.Name = "AcrylicBorderlessForm";
+            this.Name = "VideoBatchForm";
             this.Text = "Form5";
             this.ResumeLayout(false);
 

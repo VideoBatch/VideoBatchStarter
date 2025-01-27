@@ -1,17 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
+    <!--  Change WinExe to Exe and Uncomment DisableWinExeOutputInference to see Console Logs-->
+    <!--<OutputType>WinExe</OutputType>-->
+    <OutputType>Exe</OutputType>
+    <DisableWinExeOutputInference>true</DisableWinExeOutputInference>
+
     <TargetFramework>net9.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-  	<!--<DisableWinExeOutputInference>true</DisableWinExeOutputInference>-->
 
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AcrylicUI" Version="1.0.*" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.1" />
   </ItemGroup>
 
 </Project>
