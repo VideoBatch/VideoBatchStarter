@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Reflection;
+using System.Runtime.InteropServices;
 using AcrylicUI;
 using AcrylicUI.Controls;
 using AcrylicUI.Platform.Windows;
@@ -18,8 +19,20 @@ namespace VideoBatchApp
             SetupUIDefaults();
             HookEvents();
             RoundCorners(IsWindowsCreatorOrLater());
+            DisplayVersion();
 
 
+        }
+
+        private void DisplayVersion()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var assemblyVersion = assembly.GetName().Version;
+            Console.WriteLine($"Version: {assemblyVersion}");
+            var informationVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+            Console.WriteLine($"InformationalVersion  {informationVersion}");
+
+            statusLabel.Text = informationVersion;
         }
 
 
