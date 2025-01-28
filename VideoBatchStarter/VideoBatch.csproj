@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\VideoBatch.Model\VideoBatch.Model.csproj" />
+    <ProjectReference Include="..\VideoBatch.Model\VideoBatch.Model.csproj" />
   </ItemGroup>
 
   <ItemGroup>
