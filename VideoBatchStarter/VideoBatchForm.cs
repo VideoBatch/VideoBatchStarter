@@ -1,18 +1,28 @@
-﻿using System.Reflection;
-using System.Runtime.InteropServices;
-using AcrylicUI;
+﻿using AcrylicUI;
 using AcrylicUI.Controls;
+using AcrylicUI.Docking;
 using AcrylicUI.Platform.Windows;
 using AcrylicUI.Resources;
+using Microsoft.Extensions.Logging;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using VideoBatch.UI.Controls;
 
-namespace VideoBatchApp
+namespace VideoBatch.UI.Forms
 {
     public partial class VideoBatchForm : AcrylicUI.Forms.AcrylicForm
     {
 
-       
-        public VideoBatchForm()
+
+        public VideoBatchForm(
+              ILogger<VideoBatchForm> logger,
+               ProjectTree projectTree
+            )
         {
+            _logger = logger;
+            _projectTree = projectTree;
+
+
             InitializeComponent();
             // Make sure you set AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             // Program.cs : Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
@@ -20,17 +30,31 @@ namespace VideoBatchApp
             HookEvents();
             RoundCorners(IsWindowsCreatorOrLater());
             DisplayVersion();
+            LoadToolWindows();
 
 
+        }
+
+        private void LoadToolWindows()
+        {
+            _toolWindows.Add(_projectTree);
+            //_toolWindows.Add(this.canvasDock);
+            //_toolWindows.Add(this.libraryDock)
+
+            foreach (var toolWindow in _toolWindows)
+            {
+                DockPanel.AddContent(toolWindow);
+            }
         }
 
         private void DisplayVersion()
         {
             var assembly = Assembly.GetExecutingAssembly();
             var informationVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion;
-            Console.WriteLine($"InformationalVersion  {informationVersion}");
+            _logger.LogInformation ($"InformationalVersion  {informationVersion}");
+            // TODO: Configure Logger to log to console by default
+            statusLblVersion.Text = $"v:{informationVersion}";
 
-            statusLblVersion.Text = $"v:  {informationVersion}";
         }
 
 
@@ -269,6 +293,14 @@ namespace VideoBatchApp
         private Size _restoreSize;
         #endregion
 
+        #region Fields for ToolWindows
+        //private readonly MediaDock mediaDock;
+        //private readonly CanvasDock canvasDock;
+        //private readonly LibraryDock libraryDock;
+        private readonly List<DockContent> _toolWindows = new List<DockContent>();
+        private readonly ILogger<VideoBatchForm> _logger;
+        private readonly ProjectTree _projectTree;
+        #endregion
 
     }
 }

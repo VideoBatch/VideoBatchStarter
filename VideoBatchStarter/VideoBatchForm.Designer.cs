@@ -1,7 +1,7 @@
 ﻿
 using AcrylicUI.Resources;
 
-namespace VideoBatchApp
+namespace VideoBatch.UI.Forms
 {
     partial class VideoBatchForm
     {
@@ -61,7 +61,7 @@ namespace VideoBatchApp
             // 
             DockPanel.BackColor = Colors.MontereyDark;
             DockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            DockPanel.Location = new System.Drawing.Point(0, 35);
+            DockPanel.Location = new Point(0, 35);
             DockPanel.Margin = new Padding(4, 5, 4, 5);
             DockPanel.Name = "DockPanel";
             DockPanel.Size = new System.Drawing.Size(1983, 1174);
@@ -75,7 +75,7 @@ namespace VideoBatchApp
             statusStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
  statusLabel,statusLblVersion});
-            statusStrip.Location = new System.Drawing.Point(0, 1209);
+            statusStrip.Location = new Point(0, 1209);
             statusStrip.Name = "statusStrip";
             statusStrip.Padding = new Padding(5, 0, 0, 0);
             statusStrip.Size = new System.Drawing.Size(1983, 30);
@@ -111,7 +111,7 @@ namespace VideoBatchApp
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             ClientSize = new System.Drawing.Size(800, 450);
             Controls.Add(windowPanel1);
-            Location = new System.Drawing.Point(0, 0);
+            Location = new Point(0, 0);
             Name = "VideoBatchForm";
             Text = "Form5";
             windowPanel1.ResumeLayout(false);
