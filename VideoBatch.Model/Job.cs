@@ -23,11 +23,11 @@ namespace VideoBatch.Model
         public Job()
         {
             Tasks = [];
-            MediaCollection = [];
+            Assets = [];
         }
 
 
-        public ICollection<Media> MediaCollection { get; set; }
+        public ICollection<Media> Assets { get; set; }
 
         /* Navigation */
         public virtual ICollection<JobTask> Tasks { get; set; }
