@@ -1,4 +1,5 @@
 ﻿
+using AcrylicUI.Controls;
 using AcrylicUI.Resources;
 
 namespace VideoBatch.UI.Forms
@@ -34,17 +35,21 @@ namespace VideoBatch.UI.Forms
             components = new System.ComponentModel.Container();
             windowPanel1 = new AcrylicUI.Controls.WindowPanel();
             DockPanel = new AcrylicUI.Docking.DockPanel();
+            menuStrip = new AcrylicUI.Controls.AcrylicMenuStrip();
+            fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             statusStrip = new AcrylicUI.Controls.AcrylicStatusStrip();
             statusLabel = new ToolStripStatusLabel();
             statusTimer = new System.Windows.Forms.Timer(components);
             statusLblVersion = new ToolStripStatusLabel();
             windowPanel1.SuspendLayout();
             statusStrip.SuspendLayout();
+            menuStrip.SuspendLayout();
             SuspendLayout();
             // 
             // windowPanel1
             // 
             windowPanel1.Controls.Add(DockPanel);
+            windowPanel1.Controls.Add(menuStrip);
             windowPanel1.Controls.Add(statusStrip);
             windowPanel1.Dock = DockStyle.Fill;
             windowPanel1.Icon = null;
@@ -66,6 +71,28 @@ namespace VideoBatch.UI.Forms
             DockPanel.Name = "DockPanel";
             DockPanel.Size = new System.Drawing.Size(1983, 1174);
             DockPanel.TabIndex = 0;
+            //
+            // menuStrip
+            //
+            menuStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(31)))), ((int)(((byte)(31)))));
+            menuStrip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+                fileToolStripMenuItem
+            });
+            menuStrip.Location = new System.Drawing.Point(0, 0);
+            menuStrip.Name = "mnuMain";
+            menuStrip.TabIndex = 1;
+            menuStrip.Text = "acrylicMenuStrip1";
+            // 
+            // fileToolStripMenuItem
+            // 
+            fileToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(31)))), ((int)(((byte)(31)))));
+            fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            });
+            fileToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            fileToolStripMenuItem.Text = "&File";
             // 
             // statusStrip
             // 
@@ -112,11 +139,14 @@ namespace VideoBatch.UI.Forms
             ClientSize = new System.Drawing.Size(800, 450);
             Controls.Add(windowPanel1);
             Location = new Point(0, 0);
+            MainMenuStrip = menuStrip;
             Name = "VideoBatchForm";
             Text = "Form5";
             windowPanel1.ResumeLayout(false);
             statusStrip.ResumeLayout(false);
             statusStrip.PerformLayout();
+            menuStrip.ResumeLayout(false);
+            menuStrip.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -124,6 +154,8 @@ namespace VideoBatch.UI.Forms
 
         private AcrylicUI.Controls.WindowPanel windowPanel1;
         private AcrylicUI.Docking.DockPanel DockPanel;
+        private AcrylicUI.Controls.AcrylicMenuStrip menuStrip;
+        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private AcrylicUI.Controls.AcrylicStatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel statusLabel;
         private System.Windows.Forms.Timer statusTimer;
