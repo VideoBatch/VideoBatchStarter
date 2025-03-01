@@ -100,3 +100,11 @@ A Windows Forms application for batch video processing, built with .NET 9.0 and 
 - Menu structure: ✅ Implemented
 - Dark theme: ✅ Implemented
 - Core functionality: ❌ In progress 
+
+## Known Issues
+
+### UI/UX Issues
+1. About Dialog
+   - Button styling needs to be updated to match AcrylicUI theme
+   - Button size and appearance needs adjustment
+   - Need to implement proper AcrylicUI button controls instead of standard WinForms buttons 
