@@ -82,9 +82,10 @@ A Windows Forms application for batch video processing, built with .NET 9.0 and 
   - Checks for new versions of VideoBatch
   - Will support automatic updates
 
-- **About VideoBatch** - ❌ Not implemented
+- **About VideoBatch** - ✅ Implemented
   - Shows application information
   - Displays version, credits, and license info
+  - Links to website (www.videobatch.co.uk)
 
 ## Implementation Notes
 

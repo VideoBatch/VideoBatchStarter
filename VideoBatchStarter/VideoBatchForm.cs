@@ -233,7 +233,12 @@ namespace VideoBatch.UI.Forms
             }
         }
         private void CheckUpdates_Click(object sender, EventArgs e) => _logger.LogInformation("Check Updates clicked");
-        private void ShowAbout_Click(object sender, EventArgs e) => _logger.LogInformation("Show About clicked");
+        private void ShowAbout_Click(object sender, EventArgs e)
+        {
+            _logger.LogInformation("Show About clicked");
+            using var aboutForm = new AboutForm();
+            aboutForm.ShowDialog(this);
+        }
         #endregion
 
         private void LoadToolWindows()
