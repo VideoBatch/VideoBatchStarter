@@ -73,9 +73,10 @@ A Windows Forms application for batch video processing, built with .NET 9.0 and 
 ### Help Menu
 
 #### Support
-- **Documentation** (F1) - ❌ Not implemented
+- **Documentation** (F1) - ✅ Implemented
   - Opens the user documentation
-  - Will provide usage guides and examples
+  - Renders README.md with dark theme styling
+  - Displays in default browser
 
 - **Check for Updates** - ❌ Not implemented
   - Checks for new versions of VideoBatch

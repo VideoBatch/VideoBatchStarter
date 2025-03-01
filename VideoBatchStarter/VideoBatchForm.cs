@@ -6,22 +6,26 @@ using AcrylicUI.Resources;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using VideoBatch.Services;
 using VideoBatch.UI.Controls;
 
 namespace VideoBatch.UI.Forms
 {
     public partial class VideoBatchForm : AcrylicUI.Forms.AcrylicForm
     {
-
+        private readonly ILogger<VideoBatchForm> _logger;
+        private readonly ProjectTree _projectTree;
+        private readonly IDocumentationService _documentationService;
 
         public VideoBatchForm(
               ILogger<VideoBatchForm> logger,
-               ProjectTree projectTree
+              ProjectTree projectTree,
+              IDocumentationService documentationService
             )
         {
             _logger = logger;
             _projectTree = projectTree;
-
+            _documentationService = documentationService;
 
             InitializeComponent();
             // Make sure you set AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
@@ -33,8 +37,6 @@ namespace VideoBatch.UI.Forms
             RoundCorners(IsWindowsCreatorOrLater());
             DisplayVersion();
             LoadToolWindows();
-
-
         }
 
         private void SetupMenuItems()
@@ -213,7 +215,23 @@ namespace VideoBatch.UI.Forms
         private void ToggleProjectExplorer_Click(object sender, EventArgs e) => _logger.LogInformation("Toggle Project Explorer clicked");
         private void ToggleOutput_Click(object sender, EventArgs e) => _logger.LogInformation("Toggle Output clicked");
         private void ToggleFullScreen_Click(object sender, EventArgs e) => _logger.LogInformation("Toggle Full Screen clicked");
-        private void ShowDocumentation_Click(object sender, EventArgs e) => _logger.LogInformation("Show Documentation clicked");
+        private async void ShowDocumentation_Click(object sender, EventArgs e)
+        {
+            _logger.LogInformation("Show Documentation clicked");
+            try
+            {
+                await _documentationService.ShowDocumentationAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error showing documentation");
+                MessageBox.Show(
+                    "Could not open documentation. Please make sure the README.md file exists.",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
         private void CheckUpdates_Click(object sender, EventArgs e) => _logger.LogInformation("Check Updates clicked");
         private void ShowAbout_Click(object sender, EventArgs e) => _logger.LogInformation("Show About clicked");
         #endregion
@@ -237,13 +255,9 @@ namespace VideoBatch.UI.Forms
             _logger.LogInformation ($"InformationalVersion  {informationVersion}");
             // TODO: Configure Logger to log to console by default
             statusLblVersion.Text = $"v:{informationVersion}";
-
         }
 
-
         #region fix FormWindowState changes
-
-
         private void SetupUIDefaults()
         {
             // Don't change this: NoBorder with Resize Hack
@@ -255,7 +269,6 @@ namespace VideoBatch.UI.Forms
             windowPanel1.IsAcrylic = false;
             BlurOpacity = 255; // no opacity 
             BackColor = AcrylicUI.Resources.Colors.MontereyDark;
-
         }
 
         public bool IsWindowsCreatorOrLater()
@@ -281,19 +294,15 @@ namespace VideoBatch.UI.Forms
             windowPanel1.SectionHeader = "VideoBatch";
         }
 
-
         private void BtnMaximize_Click(object sender, EventArgs e)
         {
             _restoreSize = ClientSize;
             WindowState = (WindowState == FormWindowState.Normal ? FormWindowState.Maximized : FormWindowState.Normal);
             AdjustForm();
         }
-
         #endregion
 
         #region Min/Max/Restore for catching resize events to adjust form
-
-
         private void BtnMin_Click(object sender, EventArgs e)
         {
             _restoreSize = ClientSize;
@@ -321,8 +330,6 @@ namespace VideoBatch.UI.Forms
             }
         }
 
-
-
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
@@ -336,22 +343,17 @@ namespace VideoBatch.UI.Forms
                 WinProcExtentsions.TitleBarHit(Handle);
             }
         }
-
-
         #endregion
 
         #region Windows AcrylicTheme Hack
-
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
             Win32Hacks.DarkThemeTitleBar(Handle);
         }
-
         #endregion
 
         #region Window, No Border Hacks
-
         protected override void WndProc(ref Message message)
         {
             // Resize Window
@@ -395,8 +397,6 @@ namespace VideoBatch.UI.Forms
             base.WndProc(ref message);
         }
 
-
-
         protected override void OnPaintBackground(PaintEventArgs e)
         {
             base.OnPaintBackground(e);
@@ -429,13 +429,9 @@ namespace VideoBatch.UI.Forms
                 return cp;
             }
         }
-
-
         #endregion
 
         #region Round Corners
-
-
         private void RoundCorners(bool _isWindows11)
         {
             if (_isWindows11)
@@ -468,7 +464,6 @@ namespace VideoBatch.UI.Forms
                                                          DWMWINDOWATTRIBUTE attribute,
                                                          ref DWM_WINDOW_CORNER_PREFERENCE pvAttribute,
                                                          uint cbAttribute);
-
         #endregion
 
         #region Fields for Borderless Windows
@@ -482,14 +477,11 @@ namespace VideoBatch.UI.Forms
         //private readonly CanvasDock canvasDock;
         //private readonly LibraryDock libraryDock;
         private readonly List<DockContent> _toolWindows = new List<DockContent>();
-        private readonly ILogger<VideoBatchForm> _logger;
-        private readonly ProjectTree _projectTree;
         #endregion
 
         private void ExitMenuItem_Click(object sender, EventArgs e)
         {
             Close();
         }
-
     }
 }

@@ -1,6 +1,7 @@
 // Copyright (c) 2025 - ColhounTech Limited
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using VideoBatch.Services;
 using VideoBatch.UI.Controls;
 using VideoBatch.UI.Forms;
 
@@ -42,6 +43,7 @@ namespace VideoBatchApp
                 .AddLogging(x => x.AddConsole())
                 .AddScoped<VideoBatchForm>()
                 .AddScoped<ProjectTree>()
+                .AddScoped<IDocumentationService, DocumentationService>()
                 //.AddScoped<CanvasDock>()
                 //.AddScoped<MediaDock>()
                 //.AddScoped<LibraryDock>()
