@@ -1,0 +1,100 @@
+# VideoBatch
+
+A Windows Forms application for batch video processing, built with .NET 9.0 and AcrylicUI dark theme.
+
+## Menu Structure and Implementation Status
+
+### File Menu
+
+#### Project Management
+- **New Project** (Ctrl+N) - ❌ Not implemented
+  - Creates a new video batch processing project
+  - Will support creating a new JSON project file
+
+- **Open Project** (Ctrl+O) - ❌ Not implemented
+  - Opens an existing video batch processing project
+  - Supports JSON project files
+
+- **Save Project** (Ctrl+S) - ❌ Not implemented
+  - Saves the current project
+  - Saves to JSON format
+
+- **Save Project As** (Ctrl+Shift+S) - ❌ Not implemented
+  - Saves the current project to a new location
+  - Supports JSON format
+
+- **Recent Projects** - ❌ Not implemented
+  - Shows list of recently opened projects
+  - Will maintain history in application settings
+
+- **Exit** (Alt+X) - ✅ Implemented
+  - Closes the application
+  - Prompts to save if there are unsaved changes
+
+### Edit Menu
+
+#### Editing Operations
+- **Undo** (Ctrl+Z) - ❌ Not implemented
+  - Reverts the last action
+  - Will maintain action history
+
+- **Redo** (Ctrl+Y) - ❌ Not implemented
+  - Reapplies previously undone action
+  - Will maintain action history
+
+#### Clipboard Operations
+- **Cut** (Ctrl+X) - ❌ Not implemented
+  - Cuts selected items to clipboard
+
+- **Copy** (Ctrl+C) - ❌ Not implemented
+  - Copies selected items to clipboard
+
+- **Paste** (Ctrl+V) - ❌ Not implemented
+  - Pastes items from clipboard
+
+- **Delete** (Del) - ❌ Not implemented
+  - Removes selected items
+
+### View Menu
+
+#### UI Components
+- **Project Explorer** - ❌ Not implemented
+  - Toggles the Project Explorer panel visibility
+  - Shows project structure and files
+
+- **Output Window** - ❌ Not implemented
+  - Toggles the Output Window visibility
+  - Shows processing logs and status
+
+#### Display Options
+- **Full Screen** (F11) - ❌ Not implemented
+  - Toggles full screen mode
+
+### Help Menu
+
+#### Support
+- **Documentation** (F1) - ❌ Not implemented
+  - Opens the user documentation
+  - Will provide usage guides and examples
+
+- **Check for Updates** - ❌ Not implemented
+  - Checks for new versions of VideoBatch
+  - Will support automatic updates
+
+- **About VideoBatch** - ❌ Not implemented
+  - Shows application information
+  - Displays version, credits, and license info
+
+## Implementation Notes
+
+- Current Version: 1.0.0-beta
+- All menu items have logging implemented for tracking usage
+- Dark theme implemented using AcrylicUI
+- Project files use JSON format for compatibility and ease of editing
+
+## Development Status
+
+- Basic UI framework: ✅ Implemented
+- Menu structure: ✅ Implemented
+- Dark theme: ✅ Implemented
+- Core functionality: ❌ In progress 
