@@ -26,6 +26,8 @@ namespace VideoBatch.UI.Forms
             InitializeComponent();
             // Make sure you set AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             // Program.cs : Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
+
+            SetupMenuItems();
             SetupUIDefaults();
             HookEvents();
             RoundCorners(IsWindowsCreatorOrLater());
@@ -34,6 +36,187 @@ namespace VideoBatch.UI.Forms
 
 
         }
+
+        private void SetupMenuItems()
+        {
+            // Define AcrylicUI colors
+            var menuBackColor = Color.FromArgb(31, 31, 31);
+            var menuForeColor = Color.FromArgb(220, 220, 220);
+
+            // Setup File menu items
+            var newProjectItem = new ToolStripMenuItem("&New Project...", null, new EventHandler(NewProject_Click))
+            {
+                BackColor = menuBackColor,
+                ForeColor = menuForeColor,
+                ShortcutKeys = Keys.Control | Keys.N
+            };
+            
+            var openProjectItem = new ToolStripMenuItem("&Open Project...", null, new EventHandler(OpenProject_Click))
+            {
+                BackColor = menuBackColor,
+                ForeColor = menuForeColor,
+                ShortcutKeys = Keys.Control | Keys.O
+            };
+            
+            var saveProjectItem = new ToolStripMenuItem("&Save Project", null, new EventHandler(SaveProject_Click))
+            {
+                BackColor = menuBackColor,
+                ForeColor = menuForeColor,
+                ShortcutKeys = Keys.Control | Keys.S
+            };
+            
+            var saveProjectAsItem = new ToolStripMenuItem("Save Project &As...", null, new EventHandler(SaveProjectAs_Click))
+            {
+                BackColor = menuBackColor,
+                ForeColor = menuForeColor,
+                ShortcutKeys = Keys.Control | Keys.Shift | Keys.S
+            };
+
+            var recentProjectsItem = new ToolStripMenuItem("Recent Pro&jects")
+            {
+                BackColor = menuBackColor,
+                ForeColor = menuForeColor
+            };
+            
+            var exitMenuItem = new ToolStripMenuItem("E&xit", null, new EventHandler(ExitMenuItem_Click))
+            {
+                BackColor = menuBackColor,
+                ForeColor = menuForeColor,
+                ShortcutKeys = Keys.Alt | Keys.X
+            };
+
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
+                newProjectItem,
+                openProjectItem,
+                saveProjectItem,
+                saveProjectAsItem,
+                new ToolStripSeparator() { BackColor = menuBackColor },
+                recentProjectsItem,
+                new ToolStripSeparator() { BackColor = menuBackColor },
+                exitMenuItem
+            });
+
+            // Setup Edit menu
+            var editMenu = new ToolStripMenuItem("&Edit") { BackColor = menuBackColor, ForeColor = menuForeColor };
+            var undoItem = new ToolStripMenuItem("&Undo", null, new EventHandler(Undo_Click))
+            {
+                BackColor = menuBackColor,
+                ForeColor = menuForeColor,
+                ShortcutKeys = Keys.Control | Keys.Z
+            };
+            
+            var redoItem = new ToolStripMenuItem("&Redo", null, new EventHandler(Redo_Click))
+            {
+                BackColor = menuBackColor,
+                ForeColor = menuForeColor,
+                ShortcutKeys = Keys.Control | Keys.Y
+            };
+
+            editMenu.DropDownItems.AddRange(new ToolStripItem[] {
+                undoItem,
+                redoItem,
+                new ToolStripSeparator() { BackColor = menuBackColor },
+                new ToolStripMenuItem("Cu&t", null, new EventHandler(Cut_Click)) 
+                { 
+                    BackColor = menuBackColor, 
+                    ForeColor = menuForeColor, 
+                    ShortcutKeys = Keys.Control | Keys.X 
+                },
+                new ToolStripMenuItem("&Copy", null, new EventHandler(Copy_Click)) 
+                { 
+                    BackColor = menuBackColor, 
+                    ForeColor = menuForeColor, 
+                    ShortcutKeys = Keys.Control | Keys.C 
+                },
+                new ToolStripMenuItem("&Paste", null, new EventHandler(Paste_Click)) 
+                { 
+                    BackColor = menuBackColor, 
+                    ForeColor = menuForeColor, 
+                    ShortcutKeys = Keys.Control | Keys.V 
+                },
+                new ToolStripMenuItem("&Delete", null, new EventHandler(Delete_Click)) 
+                { 
+                    BackColor = menuBackColor, 
+                    ForeColor = menuForeColor, 
+                    ShortcutKeys = Keys.Delete 
+                }
+            });
+
+            // Setup View menu
+            var viewMenu = new ToolStripMenuItem("&View") { BackColor = menuBackColor, ForeColor = menuForeColor };
+            viewMenu.DropDownItems.AddRange(new ToolStripItem[] {
+                new ToolStripMenuItem("Project &Explorer", null, new EventHandler(ToggleProjectExplorer_Click)) 
+                { 
+                    BackColor = menuBackColor, 
+                    ForeColor = menuForeColor,
+                    Checked = true, 
+                    CheckOnClick = true 
+                },
+                new ToolStripMenuItem("&Output Window", null, new EventHandler(ToggleOutput_Click)) 
+                { 
+                    BackColor = menuBackColor, 
+                    ForeColor = menuForeColor,
+                    Checked = true, 
+                    CheckOnClick = true 
+                },
+                new ToolStripSeparator() { BackColor = menuBackColor },
+                new ToolStripMenuItem("&Full Screen", null, new EventHandler(ToggleFullScreen_Click)) 
+                { 
+                    BackColor = menuBackColor, 
+                    ForeColor = menuForeColor,
+                    ShortcutKeys = Keys.F11 
+                }
+            });
+
+            // Setup Help menu
+            var helpMenu = new ToolStripMenuItem("&Help") { BackColor = menuBackColor, ForeColor = menuForeColor };
+            helpMenu.DropDownItems.AddRange(new ToolStripItem[] {
+                new ToolStripMenuItem("&Documentation", null, new EventHandler(ShowDocumentation_Click)) 
+                { 
+                    BackColor = menuBackColor, 
+                    ForeColor = menuForeColor,
+                    ShortcutKeys = Keys.F1 
+                },
+                new ToolStripMenuItem("Check for &Updates", null, new EventHandler(CheckUpdates_Click))
+                { 
+                    BackColor = menuBackColor, 
+                    ForeColor = menuForeColor
+                },
+                new ToolStripSeparator() { BackColor = menuBackColor },
+                new ToolStripMenuItem("&About VideoBatch", null, new EventHandler(ShowAbout_Click))
+                { 
+                    BackColor = menuBackColor, 
+                    ForeColor = menuForeColor
+                }
+            });
+
+            // Add all menus to the menu strip
+            menuStrip.Items.AddRange(new ToolStripItem[] {
+                fileToolStripMenuItem,
+                editMenu,
+                viewMenu,
+                helpMenu
+            });
+        }
+
+        #region Menu Event Handlers
+        private void NewProject_Click(object sender, EventArgs e) => _logger.LogInformation("New Project clicked");
+        private void OpenProject_Click(object sender, EventArgs e) => _logger.LogInformation("Open Project clicked");
+        private void SaveProject_Click(object sender, EventArgs e) => _logger.LogInformation("Save Project clicked");
+        private void SaveProjectAs_Click(object sender, EventArgs e) => _logger.LogInformation("Save Project As clicked");
+        private void Undo_Click(object sender, EventArgs e) => _logger.LogInformation("Undo clicked");
+        private void Redo_Click(object sender, EventArgs e) => _logger.LogInformation("Redo clicked");
+        private void Cut_Click(object sender, EventArgs e) => _logger.LogInformation("Cut clicked");
+        private void Copy_Click(object sender, EventArgs e) => _logger.LogInformation("Copy clicked");
+        private void Paste_Click(object sender, EventArgs e) => _logger.LogInformation("Paste clicked");
+        private void Delete_Click(object sender, EventArgs e) => _logger.LogInformation("Delete clicked");
+        private void ToggleProjectExplorer_Click(object sender, EventArgs e) => _logger.LogInformation("Toggle Project Explorer clicked");
+        private void ToggleOutput_Click(object sender, EventArgs e) => _logger.LogInformation("Toggle Output clicked");
+        private void ToggleFullScreen_Click(object sender, EventArgs e) => _logger.LogInformation("Toggle Full Screen clicked");
+        private void ShowDocumentation_Click(object sender, EventArgs e) => _logger.LogInformation("Show Documentation clicked");
+        private void CheckUpdates_Click(object sender, EventArgs e) => _logger.LogInformation("Check Updates clicked");
+        private void ShowAbout_Click(object sender, EventArgs e) => _logger.LogInformation("Show About clicked");
+        #endregion
 
         private void LoadToolWindows()
         {
@@ -109,6 +292,7 @@ namespace VideoBatch.UI.Forms
         #endregion
 
         #region Min/Max/Restore for catching resize events to adjust form
+
 
         private void BtnMin_Click(object sender, EventArgs e)
         {
@@ -301,6 +485,11 @@ namespace VideoBatch.UI.Forms
         private readonly ILogger<VideoBatchForm> _logger;
         private readonly ProjectTree _projectTree;
         #endregion
+
+        private void ExitMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
 
     }
 }

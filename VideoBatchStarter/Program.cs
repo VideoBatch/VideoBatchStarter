@@ -17,6 +17,9 @@ namespace VideoBatchApp
         [STAThread]
         static void Main()
         {
+            Console.WriteLine("Starting VideoBatch Application...");
+            Console.WriteLine($"Current Time: {DateTime.Now}");
+
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             ApplicationConfiguration.Initialize();
             Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
