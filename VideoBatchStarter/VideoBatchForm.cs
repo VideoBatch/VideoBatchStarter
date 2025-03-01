@@ -236,8 +236,7 @@ namespace VideoBatch.UI.Forms
         private void ShowAbout_Click(object sender, EventArgs e)
         {
             _logger.LogInformation("Show About clicked");
-            using var aboutForm = new AboutForm();
-            aboutForm.ShowDialog(this);
+            AboutForm.Show(this);
         }
         #endregion
 

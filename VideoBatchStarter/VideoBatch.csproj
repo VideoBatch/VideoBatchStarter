@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AcrylicUI" Version="1.0.0-preview5.9" />
+    <PackageReference Include="AcrylicUI" Version="1.0.*" />
     <PackageReference Include="Markdig" Version="0.35.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0-preview.2.24128.5" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0-preview.2.24128.5" />
