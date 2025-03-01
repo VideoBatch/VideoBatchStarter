@@ -4,11 +4,9 @@ using System.Diagnostics;
 
 namespace VideoBatch.Services
 {
-    public interface IDocumentationService
-    {
-        Task ShowDocumentationAsync();
-    }
-
+    /// <summary>
+    /// Implementation of IDocumentationService that renders Markdown documentation as HTML
+    /// </summary>
     public class DocumentationService : IDocumentationService
     {
         private readonly ILogger<DocumentationService> _logger;
