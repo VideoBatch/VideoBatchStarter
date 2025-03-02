@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   
   <PropertyGroup>
-    <Version>1.0.0-beta</Version>
+    <Version>1.0.1-beta</Version>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 
     <!--  Change WinExe to Exe and Uncomment DisableWinExeOutputInference to see Console Logs-->
@@ -13,7 +13,9 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-
+    
+    <!-- Suppress nullability warnings for Windows Forms event handlers -->
+    <NoWarn>$(NoWarn);CS8622;CS8625</NoWarn>
   </PropertyGroup>
   
   <ItemGroup>
@@ -36,6 +38,9 @@
 
   <ItemGroup>
     <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="README.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

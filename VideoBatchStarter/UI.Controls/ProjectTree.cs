@@ -23,20 +23,22 @@ namespace VideoBatch.UI.Controls
 
         #region Constructors
 
-        //public ProjectTree(ILogger<ProjectTree> logger, IProjectServices projectServices) : this()
-        //{
-        //    _logger = logger;
-        //    _projectServices = projectServices;
-        //    BuildTreeView();
-        //}
-        public ProjectTree()
+        private readonly ILogger<ProjectTree> _logger;
+        private readonly IProjectServices _projectServices;
+        private TreeNode? _clickedNode;
+
+        public ProjectTree(ILogger<ProjectTree> logger, IProjectServices projectServices)
         {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _projectServices = projectServices ?? throw new ArgumentNullException(nameof(projectServices));
+            
             InitializeComponent();
-            SetupContextMenu();
             HookEvents();
-            DefaultDockArea = DockArea.Left;
-            DockText = "Project Explorer";
+            SetupContextMenu();
+            
             Text = "Project Explorer";
+            DockText = "Project Explorer";
+            DefaultDockArea = DockArea.Left;
         }
 
         private void HookEvents()
@@ -289,15 +291,10 @@ namespace VideoBatch.UI.Controls
 
         #region Private fields
 
-        private readonly ILogger _logger;
-        private readonly IProjectServices _projectServices;
         private readonly AcrylicContextMenu _mnu = new AcrylicContextMenu();
 
         private readonly ToolStripMenuItem _mnuJobNodeDelete = new ToolStripMenuItem("Delete");
         private readonly ToolStripMenuItem _mnuJobNodeRename = new ToolStripMenuItem("Rename");
-        private TreeItem _clickedNode;
-
-
 
         #endregion
     }

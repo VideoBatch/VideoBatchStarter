@@ -37,7 +37,10 @@ jobs:
       run: dotnet build ${{ env.SOLUTION_FILE }} -c Release --no-restore
       
     - name: Publish
-      run: dotnet publish ${{ env.PROJECT_PATH }} -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish
+      run: |
+        dotnet publish ${{ env.PROJECT_PATH }} -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish
+        Copy-Item "VideoBatchStarter/README.md" -Destination "publish/README.md"
+      shell: pwsh
       
     - name: Create ZIP archive
       run: Compress-Archive -Path publish/* -DestinationPath "${{ env.RELEASE_NAME }}-${{ steps.get_version.outputs.VERSION }}.zip"

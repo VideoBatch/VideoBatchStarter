@@ -1,6 +1,7 @@
 using Markdig;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace VideoBatch.Services
 {
@@ -10,7 +11,7 @@ namespace VideoBatch.Services
     public class DocumentationService : IDocumentationService
     {
         private readonly ILogger<DocumentationService> _logger;
-        private const string README_PATH = "README.md";
+        private const string README_FILENAME = "README.md";
         private const string HTML_TEMPLATE = @"
 <!DOCTYPE html>
 <html lang='en'>
@@ -83,7 +84,15 @@ namespace VideoBatch.Services
         {
             try
             {
-                string markdownContent = await File.ReadAllTextAsync(README_PATH);
+                string readmePath = GetReadmePath();
+                _logger.LogInformation("Loading documentation from: {Path}", readmePath);
+                
+                if (!File.Exists(readmePath))
+                {
+                    throw new FileNotFoundException($"Documentation file not found at {readmePath}. Please ensure README.md is included with the application.", readmePath);
+                }
+
+                string markdownContent = await File.ReadAllTextAsync(readmePath);
                 
                 // Configure Markdig with common extensions
                 var pipeline = new MarkdownPipelineBuilder()
@@ -115,6 +124,31 @@ namespace VideoBatch.Services
                 _logger.LogError(ex, "Error showing documentation");
                 throw;
             }
+        }
+
+        private string GetReadmePath()
+        {
+            // First try the executable directory
+            string exePath = AppDomain.CurrentDomain.BaseDirectory;
+            string readmePath = Path.Combine(exePath, README_FILENAME);
+
+            if (File.Exists(readmePath))
+            {
+                return readmePath;
+            }
+
+            // If not found and we're in development (bin/Debug/net9.0-windows), try going up to project root
+            if (exePath.Contains("bin") && (exePath.Contains("Debug") || exePath.Contains("Release")))
+            {
+                readmePath = Path.GetFullPath(Path.Combine(exePath, "..", "..", "..", README_FILENAME));
+                if (File.Exists(readmePath))
+                {
+                    return readmePath;
+                }
+            }
+
+            // Default to executable directory path even if not found (will throw appropriate error)
+            return Path.Combine(exePath, README_FILENAME);
         }
     }
 } 
