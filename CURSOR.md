@@ -20,6 +20,11 @@
    - Documentation accessibility
    - Proper file locations
 
+3. Commit Process:
+   - After successful testing, type ":shipit" in the chat
+   - Only after receiving this explicit approval should changes be committed and pushed
+   - This ensures all changes are properly tested and approved
+
 ## Version Management
 1. Version format: `MAJOR.MINOR.PATCH[-PRERELEASE]`
    - MAJOR: Breaking changes
@@ -29,7 +34,7 @@
 
 2. To update version:
    - Edit `Version` in `VideoBatchStarter/VideoBatch.csproj`
-   - Commit and push to master
+   - Commit and push to master (after ":shipit" approval)
    - GitHub Actions will automatically:
      - Create a tag (e.g., v1.0.1-beta)
      - Build and package the release
@@ -69,4 +74,5 @@
 2. Check file paths and dependencies
 3. Update version numbers appropriately
 4. Keep documentation in sync with changes
-5. Clean up build artifacts before committing 
+5. Clean up build artifacts before committing
+6. Wait for explicit ":shipit" approval before committing changes 

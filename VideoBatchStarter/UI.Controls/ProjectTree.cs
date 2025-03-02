@@ -59,7 +59,7 @@ namespace VideoBatch.UI.Controls
         {
             tvProjectTree.SelectNode((AcrylicTreeNode)node);
         }
-        public AcrylicTreeNode QuickJob
+        public AcrylicTreeNode? QuickJob
         {
             get
             {
@@ -71,9 +71,12 @@ namespace VideoBatch.UI.Controls
         public void Add(TreeItem newNode)
         {
             var selectedNode = tvProjectTree.SelectedNodes.FirstOrDefault();
-            selectedNode.Nodes.Add(newNode);
-            tvProjectTree.SelectNode(newNode);
-            newNode.EnsureVisible();
+            if (selectedNode != null)
+            {
+                selectedNode.Nodes.Add(newNode);
+                tvProjectTree.SelectNode(newNode);
+                newNode.EnsureVisible();
+            }
         }
 
         // AddTask
@@ -81,56 +84,55 @@ namespace VideoBatch.UI.Controls
         {
             if (j is not null)
             {
-
                 var selectedNode = FindJobNode(parent, j);
-                selectedNode.Nodes.Add(newNode);
-                tvProjectTree.SelectNode(newNode);
-                newNode.EnsureVisible();
+                if (selectedNode != null)
+                {
+                    selectedNode.Nodes.Add(newNode);
+                    tvProjectTree.SelectNode(newNode);
+                    newNode.EnsureVisible();
+                }
             }
         }
-
 
         public void AddJob(TreeItem newNode, Project p)
         {
             if (p is not null)
             {
                 var selectedNode = FindProjectNode(p);
-                selectedNode.Nodes.Add(newNode);
-                tvProjectTree.SelectNode(newNode);
-                newNode.EnsureVisible();
+                if (selectedNode != null)
+                {
+                    selectedNode.Nodes.Add(newNode);
+                    tvProjectTree.SelectNode(newNode);
+                    newNode.EnsureVisible();
+                }
             }
         }
-
 
         public async void BuildTreeView()
         {
             Team team = await _projectServices.GetTeamAsync();
             _logger.LogInformation($"BuildTreeView: Team has {team.Projects.Count} Projects");
             TreeItem node = new(team);
-            throw new NotImplementedException("Add Icons to TreeView");
-            //node.SvgIcon = ProjectExplorer.Log_16x_svg;
+            // TODO: Add icons to TreeView in a future update
             tvProjectTree.Nodes.Add(node);
 
             PopulateTreeRecursive(team, node);
             node.Nodes.FirstOrDefault()?.EnsureVisible();
         }
 
-        public TreeItem FindProjectNode(Project p)
+        public TreeItem? FindProjectNode(Project p)
         {
             var teamPath = FindTeamPath();
             var fullpath = $"{teamPath}\\{p.Name}";
-            return (TreeItem)tvProjectTree.FindNode(fullpath);
+            return (TreeItem?)tvProjectTree.FindNode(fullpath);
         }
 
-        public TreeItem FindJobNode(Project p, Job j)
+        public TreeItem? FindJobNode(Project p, Job j)
         {
             var teamPath = FindTeamPath();
             var fullpath = $"{teamPath}\\{p.Name}\\{j.Name}";
-            return (TreeItem)tvProjectTree.FindNode(fullpath);
+            return (TreeItem?)tvProjectTree.FindNode(fullpath);
         }
-
-
-
 
         /// <summary>
         /// var string = $"{}"Mícheál's Team\\Quick Jobs"";   
@@ -144,7 +146,6 @@ namespace VideoBatch.UI.Controls
         #endregion
 
         #region private Methods
-
 
         private void PopulateTreeRecursive(Primitive target, AcrylicTreeNode node)
         {
@@ -167,9 +168,7 @@ namespace VideoBatch.UI.Controls
 
         private void _mnuJobNodeRename_Click(object sender, EventArgs e)
         {
-            var item = _clickedNode;
-
-            if (_clickedNode is not null && item.Primitive is Job j)
+            if (_clickedNode is not null && _clickedNode.Primitive is Job j)
             {
                 var rename = _clickedNode.Text;
                 var dialog = new RenameForm { DialogButtons = AcrylicDialogButton.OkCancel };
@@ -188,15 +187,9 @@ namespace VideoBatch.UI.Controls
 
         private async void _mnuJobNodeDelete_Click(object sender, EventArgs e)
         {
-            var item = _clickedNode;
-
-            // close Window First.
-
-
             if (_clickedNode is not null)
             {
-                if (item.Primitive is Job j)
-
+                if (_clickedNode.Primitive is Job j)
                 {
                     if (j.Tasks?.Count > 0)
                     {
@@ -211,17 +204,19 @@ namespace VideoBatch.UI.Controls
                     if (result == DialogResult.Yes)
                     {
                         //delete Node                    
-                        var parent = item.ParentNode;
-                        parent.Nodes.Remove(item);
-                        await _projectServices.DeleteJobAsync(j);
+                        var parent = _clickedNode.ParentNode;
+                        if (parent != null)
+                        {
+                            parent.Nodes.Remove(_clickedNode);
+                            await _projectServices.DeleteJobAsync(j);
 
-                        var args = new ProjectTreeEventArgs(item);
-                        OnNodeDeleted?.Invoke(sender, args);
+                            var args = new ProjectTreeEventArgs(_clickedNode);
+                            OnNodeDeleted?.Invoke(sender, args);
+                        }
                     }
                 }
 
-                if (item.Primitive is JobTask t)
-
+                if (_clickedNode.Primitive is JobTask t)
                 {
                     var result = AcrylicMessageBox.ShowWarning(
                         $"Are Your Sure you want to DELETE {Environment.NewLine}'{t.Name}' ?",
@@ -231,18 +226,20 @@ namespace VideoBatch.UI.Controls
                     if (result == DialogResult.Yes)
                     {
                         //delete Node                    
-                        var parent = item.ParentNode;
-                        parent.Nodes.Remove(item);
-                        await _projectServices.DeleteTaskAsync(t);
+                        var parent = _clickedNode.ParentNode;
+                        if (parent != null)
+                        {
+                            parent.Nodes.Remove(_clickedNode);
+                            await _projectServices.DeleteTaskAsync(t);
 
-                        var args = new ProjectTreeEventArgs(item);
-                        OnNodeDeleted?.Invoke(sender, args);
+                            var args = new ProjectTreeEventArgs(_clickedNode);
+                            OnNodeDeleted?.Invoke(sender, args);
+                        }
                     }
                 }
             }
             _clickedNode = null;
         }
-
 
         private void TvProjectTree_SelectedNodesChanged(object sender, EventArgs e)
         {
@@ -259,7 +256,6 @@ namespace VideoBatch.UI.Controls
                 }
             }
         }
-
 
         private void RightMouseClick(object sender, MouseEventArgs e)
         {
@@ -283,16 +279,11 @@ namespace VideoBatch.UI.Controls
             }
         }
 
-
-
-
-
         #endregion
 
         #region Private fields
 
         private readonly AcrylicContextMenu _mnu = new AcrylicContextMenu();
-
         private readonly ToolStripMenuItem _mnuJobNodeDelete = new ToolStripMenuItem("Delete");
         private readonly ToolStripMenuItem _mnuJobNodeRename = new ToolStripMenuItem("Rename");
 

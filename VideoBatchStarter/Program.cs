@@ -44,6 +44,7 @@ namespace VideoBatchApp
                 .AddScoped<VideoBatchForm>()
                 .AddScoped<ProjectTree>()
                 .AddScoped<IDocumentationService, DocumentationService>()
+                .AddScoped<IProjectServices, ProjectServices>()
                 //.AddScoped<CanvasDock>()
                 //.AddScoped<MediaDock>()
                 //.AddScoped<LibraryDock>()
