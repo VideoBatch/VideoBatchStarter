@@ -25,7 +25,7 @@ namespace VideoBatch.UI.Controls
 
         private readonly ILogger<ProjectTree> _logger;
         private readonly IProjectServices _projectServices;
-        private TreeNode? _clickedNode;
+        private TreeItem? _clickedNode;
 
         public ProjectTree(ILogger<ProjectTree> logger, IProjectServices projectServices)
         {
