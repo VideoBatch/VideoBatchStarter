@@ -6,7 +6,7 @@ on:
       - master  # Trigger on pushes to master branch
 
 env:
-  SOLUTION_FILE: VideoBatchStarter.sln
+  SOLUTION_FILE: VideoBatch.sln
   PROJECT_PATH: VideoBatchStarter/VideoBatch.csproj
   RELEASE_NAME: VideoBatch
 
