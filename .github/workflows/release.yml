@@ -2,12 +2,12 @@ name: Build and Publish Release
 
 on:
   push:
-    tags:
-      - 'v*'  # Trigger on version tags
+    branches:
+      - master  # Trigger on pushes to master branch
 
 env:
   SOLUTION_FILE: VideoBatchStarter.sln
-  PROJECT_PATH: VideoBatchStarter/VideoBatchStarter.csproj
+  PROJECT_PATH: VideoBatchStarter/VideoBatch.csproj
   RELEASE_NAME: VideoBatch
 
 jobs:
@@ -21,6 +21,14 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '9.0.x'
+    
+    - name: Get Version
+      id: get_version
+      shell: pwsh
+      run: |
+        $xml = [Xml] (Get-Content ${{ env.PROJECT_PATH }})
+        $version = $xml.Project.PropertyGroup.Version
+        echo "VERSION=$version" >> $env_GITHUB_OUTPUT
         
     - name: Restore dependencies
       run: dotnet restore ${{ env.SOLUTION_FILE }}
@@ -32,17 +40,18 @@ jobs:
       run: dotnet publish ${{ env.PROJECT_PATH }} -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish
       
     - name: Create ZIP archive
-      run: Compress-Archive -Path publish/* -DestinationPath ${{ env.RELEASE_NAME }}.zip
+      run: Compress-Archive -Path publish/* -DestinationPath "${{ env.RELEASE_NAME }}-${{ steps.get_version.outputs.VERSION }}.zip"
       shell: pwsh
       
     - name: Create Release
       id: create_release
       uses: softprops/action-gh-release@v1
       with:
-        files: ${{ env.RELEASE_NAME }}.zip
-        name: Release ${{ github.ref_name }}
+        files: ${{ env.RELEASE_NAME }}-${{ steps.get_version.outputs.VERSION }}.zip
+        name: Release ${{ steps.get_version.outputs.VERSION }}
+        tag_name: v${{ steps.get_version.outputs.VERSION }}
         draft: false
-        prerelease: false
+        prerelease: ${{ contains(steps.get_version.outputs.VERSION, '-') }}
         generate_release_notes: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
