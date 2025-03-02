@@ -58,13 +58,29 @@ A Windows Forms application for batch video processing, built with .NET 9.0 and 
 ### View Menu
 
 #### UI Components
-- **Project Explorer** - ❌ Not implemented
+- **Project Explorer** - ✅ Implemented
   - Toggles the Project Explorer panel visibility
   - Shows project structure and files
+  - Supports docking, floating, and closing
+  - Menu state syncs with panel visibility
 
-- **Output Window** - ❌ Not implemented
+- **Media Inspector** - ✅ Implemented
+  - Toggles the Media Inspector panel visibility
+  - Shows media file properties and metadata
+  - Supports docking, floating, and closing
+  - Menu state syncs with panel visibility
+
+- **Batch Processing** - ✅ Implemented
+  - Toggles the Batch Processing panel visibility
+  - Shows batch processing settings and controls
+  - Supports docking, floating, and closing
+  - Menu state syncs with panel visibility
+
+- **Output Window** - ✅ Implemented
   - Toggles the Output Window visibility
   - Shows processing logs and status
+  - Supports docking, floating, and closing
+  - Menu state syncs with panel visibility
 
 #### Display Options
 - **Full Screen** (F11) - ❌ Not implemented
@@ -93,12 +109,19 @@ A Windows Forms application for batch video processing, built with .NET 9.0 and 
 - All menu items have logging implemented for tracking usage
 - Dark theme implemented using AcrylicUI
 - Project files use JSON format for compatibility and ease of editing
+- Docking system implemented with support for:
+  - Panel docking to left, right, and bottom areas
+  - Floating windows
+  - Tabbed interface for panels in same dock area
+  - Synchronized menu state with panel visibility
+  - Close button functionality for all panels
 
 ## Development Status
 
 - Basic UI framework: ✅ Implemented
 - Menu structure: ✅ Implemented
 - Dark theme: ✅ Implemented
+- Docking system: ✅ Implemented
 - Core functionality: ❌ In progress 
 
 ## Known Issues

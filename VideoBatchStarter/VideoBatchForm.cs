@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using VideoBatch.Services;
 using VideoBatch.UI.Controls;
+using VideoBatch.UI.Forms.Docking;
 
 namespace VideoBatch.UI.Forms
 {
@@ -16,6 +17,11 @@ namespace VideoBatch.UI.Forms
         private readonly ILogger<VideoBatchForm> _logger;
         private readonly ProjectTree _projectTree;
         private readonly IDocumentationService _documentationService;
+
+        // New docking panels
+        private readonly MediaInspectorDock _mediaInspector;
+        private readonly BatchProcessingDock _batchProcessing;
+        private readonly OutputDock _output;
 
         public VideoBatchForm(
               ILogger<VideoBatchForm> logger,
@@ -26,6 +32,11 @@ namespace VideoBatch.UI.Forms
             _logger = logger;
             _projectTree = projectTree;
             _documentationService = documentationService;
+
+            // Initialize docking panels
+            _mediaInspector = new MediaInspectorDock();
+            _batchProcessing = new BatchProcessingDock();
+            _output = new OutputDock();
 
             InitializeComponent();
             // Make sure you set AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
@@ -154,6 +165,20 @@ namespace VideoBatch.UI.Forms
                     Checked = true, 
                     CheckOnClick = true 
                 },
+                new ToolStripMenuItem("&Media Inspector", null, new EventHandler(ToggleMediaInspector_Click))
+                {
+                    BackColor = menuBackColor,
+                    ForeColor = menuForeColor,
+                    Checked = true,
+                    CheckOnClick = true
+                },
+                new ToolStripMenuItem("&Batch Processing", null, new EventHandler(ToggleBatchProcessing_Click))
+                {
+                    BackColor = menuBackColor,
+                    ForeColor = menuForeColor,
+                    Checked = true,
+                    CheckOnClick = true
+                },
                 new ToolStripMenuItem("&Output Window", null, new EventHandler(ToggleOutput_Click)) 
                 { 
                     BackColor = menuBackColor, 
@@ -212,8 +237,26 @@ namespace VideoBatch.UI.Forms
         private void Copy_Click(object sender, EventArgs e) => _logger.LogInformation("Copy clicked");
         private void Paste_Click(object sender, EventArgs e) => _logger.LogInformation("Paste clicked");
         private void Delete_Click(object sender, EventArgs e) => _logger.LogInformation("Delete clicked");
-        private void ToggleProjectExplorer_Click(object sender, EventArgs e) => _logger.LogInformation("Toggle Project Explorer clicked");
-        private void ToggleOutput_Click(object sender, EventArgs e) => _logger.LogInformation("Toggle Output clicked");
+        private void ToggleProjectExplorer_Click(object sender, EventArgs e)
+        {
+            _logger.LogInformation("Toggle Project Explorer clicked");
+            ToggleToolWindow(_projectTree);
+        }
+        private void ToggleMediaInspector_Click(object sender, EventArgs e)
+        {
+            _logger.LogInformation("Toggle Media Inspector clicked");
+            ToggleToolWindow(_mediaInspector);
+        }
+        private void ToggleBatchProcessing_Click(object sender, EventArgs e)
+        {
+            _logger.LogInformation("Toggle Batch Processing clicked");
+            ToggleToolWindow(_batchProcessing);
+        }
+        private void ToggleOutput_Click(object sender, EventArgs e)
+        {
+            _logger.LogInformation("Toggle Output clicked");
+            ToggleToolWindow(_output);
+        }
         private void ToggleFullScreen_Click(object sender, EventArgs e) => _logger.LogInformation("Toggle Full Screen clicked");
         private async void ShowDocumentation_Click(object sender, EventArgs e)
         {
@@ -238,18 +281,95 @@ namespace VideoBatch.UI.Forms
             _logger.LogInformation("Show About clicked");
             AboutForm.Show(this);
         }
+
+        private void ToggleToolWindow(DockContent toolWindow)
+        {
+            if (toolWindow.DockPanel == null)
+            {
+                DockPanel.AddContent(toolWindow);
+                UpdateMenuItemState(toolWindow, true);
+            }
+            else
+            {
+                DockPanel.RemoveContent(toolWindow);
+                UpdateMenuItemState(toolWindow, false);
+            }
+        }
+
+        private void UpdateMenuItemState(DockContent toolWindow, bool isVisible)
+        {
+            var menuItem = GetMenuItemForToolWindow(toolWindow);
+            if (menuItem != null)
+            {
+                menuItem.Checked = isVisible;
+            }
+        }
+
+        private ToolStripMenuItem? GetMenuItemForToolWindow(DockContent toolWindow)
+        {
+            if (toolWindow == _projectTree)
+                return GetViewMenuItem("Project Explorer");
+            else if (toolWindow == _mediaInspector)
+                return GetViewMenuItem("Media Inspector");
+            else if (toolWindow == _batchProcessing)
+                return GetViewMenuItem("Batch Processing");
+            else if (toolWindow == _output)
+                return GetViewMenuItem("Output Window");
+            return null;
+        }
+
+        private ToolStripMenuItem? GetViewMenuItem(string text)
+        {
+            var viewMenu = menuStrip.Items.OfType<ToolStripMenuItem>().FirstOrDefault(x => x.Text == "&View");
+            return viewMenu?.DropDownItems.OfType<ToolStripMenuItem>().FirstOrDefault(x => x.Text == $"Project &Explorer" && text == "Project Explorer" ||
+                                                                                          x.Text == "&Media Inspector" && text == "Media Inspector" ||
+                                                                                          x.Text == "&Batch Processing" && text == "Batch Processing" ||
+                                                                                          x.Text == "&Output Window" && text == "Output Window");
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            // Hook up to DockPanel events
+            DockPanel.ContentRemoved += DockPanel_ContentRemoved;
+        }
+
+        private void DockPanel_ContentRemoved(object sender, DockContentEventArgs e)
+        {
+            // Update menu item state when content is removed
+            UpdateMenuItemState(e.Content, false);
+        }
         #endregion
 
         private void LoadToolWindows()
         {
-            _toolWindows.Add(_projectTree);
-            //_toolWindows.Add(this.canvasDock);
-            //_toolWindows.Add(this.libraryDock)
+            // First add side panels (left and right)
+            _projectTree.DefaultDockArea = DockArea.Left;
+            _projectTree.DockArea = DockArea.Left;
+            _projectTree.Width = 250;
+            DockPanel.AddContent(_projectTree);
 
-            foreach (var toolWindow in _toolWindows)
-            {
-                DockPanel.AddContent(toolWindow);
-            }
+            _batchProcessing.DefaultDockArea = DockArea.Right;
+            _batchProcessing.DockArea = DockArea.Right;
+            _batchProcessing.Width = 300;
+            DockPanel.AddContent(_batchProcessing);
+
+            // Then add bottom panels - they will appear as tabs since they share the same dock area
+            _mediaInspector.DefaultDockArea = DockArea.Bottom;
+            _mediaInspector.DockArea = DockArea.Bottom;
+            _mediaInspector.Height = 200;
+            DockPanel.AddContent(_mediaInspector);
+
+            _output.DefaultDockArea = DockArea.Bottom;
+            _output.DockArea = DockArea.Bottom;
+            _output.Height = 200;
+            DockPanel.AddContent(_output);
+
+            // Add to tool windows list for management
+            _toolWindows.Add(_projectTree);
+            _toolWindows.Add(_batchProcessing);
+            _toolWindows.Add(_mediaInspector);
+            _toolWindows.Add(_output);
         }
 
         private void DisplayVersion()

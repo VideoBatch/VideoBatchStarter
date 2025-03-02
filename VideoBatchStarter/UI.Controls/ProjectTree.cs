@@ -34,20 +34,17 @@ namespace VideoBatch.UI.Controls
             InitializeComponent();
             SetupContextMenu();
             HookEvents();
-
+            DefaultDockArea = DockArea.Left;
+            DockText = "Project Explorer";
+            Text = "Project Explorer";
         }
 
         private void HookEvents()
         {
-
             tvProjectTree.MouseClick += RightMouseClick;
             tvProjectTree.DoubleClick += (sender, e) => DoubleClick?.Invoke(sender, e);
             tvProjectTree.SelectedNodesChanged += TvProjectTree_SelectedNodesChanged;
         }
-
-
-
-
 
         #endregion
 
