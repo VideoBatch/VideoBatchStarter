@@ -83,8 +83,10 @@ A Windows Forms application for batch video processing, built with .NET 9.0 and 
   - Menu state syncs with panel visibility
 
 #### Display Options
-- **Full Screen** (F11) - ❌ Not implemented
-  - Toggles full screen mode
+- **Full Screen** (F11) - ⏸️ Temporarily disabled
+  - Full screen mode will be implemented in a future update
+  - Will support F11 shortcut toggle
+  - Will preserve window state and position
 
 ### Help Menu
 

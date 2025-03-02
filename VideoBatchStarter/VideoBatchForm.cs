@@ -187,12 +187,13 @@ namespace VideoBatch.UI.Forms
                     CheckOnClick = true 
                 },
                 new ToolStripSeparator() { BackColor = menuBackColor },
-                new ToolStripMenuItem("&Full Screen", null, new EventHandler(ToggleFullScreen_Click)) 
-                { 
-                    BackColor = menuBackColor, 
-                    ForeColor = menuForeColor,
-                    ShortcutKeys = Keys.F11 
-                }
+                // Full screen functionality temporarily disabled
+                //new ToolStripMenuItem("&Full Screen", null, new EventHandler(ToggleFullScreen_Click)) 
+                //{ 
+                //    BackColor = menuBackColor, 
+                //    ForeColor = menuForeColor,
+                //    ShortcutKeys = Keys.F11 
+                //}
             });
 
             // Setup Help menu
@@ -257,7 +258,8 @@ namespace VideoBatch.UI.Forms
             _logger.LogInformation("Toggle Output clicked");
             ToggleToolWindow(_output);
         }
-        private void ToggleFullScreen_Click(object sender, EventArgs e) => _logger.LogInformation("Toggle Full Screen clicked");
+        // Full screen functionality temporarily disabled
+        //private void ToggleFullScreen_Click(object sender, EventArgs e) => _logger.LogInformation("Toggle Full Screen clicked");
         private async void ShowDocumentation_Click(object sender, EventArgs e)
         {
             _logger.LogInformation("Show Documentation clicked");
