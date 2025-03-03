@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using VideoBatch.Services;
 using VideoBatch.UI.Controls;
 using VideoBatch.UI.Forms;
+using VideoBatch.UI.Forms.Docking;
 
 
 /* TODO : Short Roadmap of non-critical nice to have tsks
@@ -45,6 +46,13 @@ namespace VideoBatchApp
                 .AddScoped<ProjectTree>()
                 .AddScoped<IDocumentationService, DocumentationService>()
                 .AddScoped<IProjectServices, ProjectServices>()
+                .AddScoped<MediaInspectorDock>()
+                .AddScoped<BatchProcessingDock>()
+                .AddScoped<OutputDock>()
+                .AddTransient(sp => sp.GetRequiredService<ILoggerFactory>().CreateLogger<MediaInspectorDock>())
+                .AddTransient(sp => sp.GetRequiredService<ILoggerFactory>().CreateLogger<BatchProcessingDock>())
+                .AddTransient(sp => sp.GetRequiredService<ILoggerFactory>().CreateLogger<OutputDock>())
+                .AddTransient(sp => sp.GetRequiredService<ILoggerFactory>().CreateLogger<SettingsForm>())
                 //.AddScoped<CanvasDock>()
                 //.AddScoped<MediaDock>()
                 //.AddScoped<LibraryDock>()

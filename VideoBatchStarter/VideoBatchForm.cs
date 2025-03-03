@@ -4,6 +4,7 @@ using AcrylicUI.Docking;
 using AcrylicUI.Platform.Windows;
 using AcrylicUI.Resources;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using VideoBatch.Services;
@@ -15,6 +16,7 @@ namespace VideoBatch.UI.Forms
     public partial class VideoBatchForm : AcrylicUI.Forms.AcrylicForm
     {
         private readonly ILogger<VideoBatchForm> _logger;
+        private readonly IServiceProvider _serviceProvider;
         private readonly ProjectTree _projectTree;
         private readonly IDocumentationService _documentationService;
 
@@ -23,13 +25,19 @@ namespace VideoBatch.UI.Forms
         private readonly BatchProcessingDock _batchProcessing;
         private readonly OutputDock _output;
 
+        private readonly DockPanel _dockPanel;
+        private readonly Dictionary<string, DockContent> _toolWindows;
+        private readonly Dictionary<string, ToolStripMenuItem> _toolWindowMenuItems;
+
         public VideoBatchForm(
               ILogger<VideoBatchForm> logger,
+              IServiceProvider serviceProvider,
               ProjectTree projectTree,
               IDocumentationService documentationService
             )
         {
             _logger = logger;
+            _serviceProvider = serviceProvider;
             _projectTree = projectTree;
             _documentationService = documentationService;
 
@@ -37,6 +45,10 @@ namespace VideoBatch.UI.Forms
             _mediaInspector = new MediaInspectorDock();
             _batchProcessing = new BatchProcessingDock();
             _output = new OutputDock();
+
+            _dockPanel = new DockPanel();
+            _toolWindows = new Dictionary<string, DockContent>();
+            _toolWindowMenuItems = new Dictionary<string, ToolStripMenuItem>();
 
             InitializeComponent();
             // Make sure you set AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
@@ -218,11 +230,22 @@ namespace VideoBatch.UI.Forms
                 }
             });
 
+            // Setup Options menu
+            var optionsMenu = new ToolStripMenuItem("&Options") { BackColor = menuBackColor, ForeColor = menuForeColor };
+            optionsMenu.DropDownItems.AddRange(new ToolStripItem[] {
+                new ToolStripMenuItem("&Settings...", null, new EventHandler(ShowSettings_Click))
+                {
+                    BackColor = menuBackColor,
+                    ForeColor = menuForeColor
+                }
+            });
+
             // Add all menus to the menu strip
             menuStrip.Items.AddRange(new ToolStripItem[] {
                 fileToolStripMenuItem,
                 editMenu,
                 viewMenu,
+                optionsMenu,
                 helpMenu
             });
         }
@@ -282,6 +305,13 @@ namespace VideoBatch.UI.Forms
         {
             _logger.LogInformation("Show About clicked");
             AboutForm.Show(this);
+        }
+
+        private void ShowSettings_Click(object sender, EventArgs e)
+        {
+            _logger.LogInformation("Opening Settings dialog");
+            var settingsForm = new SettingsForm(_serviceProvider.GetRequiredService<ILogger<SettingsForm>>());
+            settingsForm.ShowDialog(this);
         }
 
         private void ToggleToolWindow(DockContent toolWindow)
@@ -368,10 +398,10 @@ namespace VideoBatch.UI.Forms
             DockPanel.AddContent(_output);
 
             // Add to tool windows list for management
-            _toolWindows.Add(_projectTree);
-            _toolWindows.Add(_batchProcessing);
-            _toolWindows.Add(_mediaInspector);
-            _toolWindows.Add(_output);
+            _toolWindows.Add("ProjectTree", _projectTree);
+            _toolWindows.Add("BatchProcessing", _batchProcessing);
+            _toolWindows.Add("MediaInspector", _mediaInspector);
+            _toolWindows.Add("Output", _output);
         }
 
         private void DisplayVersion()
@@ -602,7 +632,6 @@ namespace VideoBatch.UI.Forms
         //private readonly MediaDock mediaDock;
         //private readonly CanvasDock canvasDock;
         //private readonly LibraryDock libraryDock;
-        private readonly List<DockContent> _toolWindows = new List<DockContent>();
         #endregion
 
         private void ExitMenuItem_Click(object sender, EventArgs e)
