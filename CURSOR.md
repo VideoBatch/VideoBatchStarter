@@ -89,4 +89,17 @@
 3. Update version numbers appropriately
 4. Keep documentation in sync with changes
 5. Clean up build artifacts before committing
-6. Wait for explicit ":shipit" approval before committing changes 
+6. Wait for explicit ":shipit" approval before committing changes
+
+## UI Design Guidelines
+1. Controls and Styling:
+   - Always use AcrylicUI controls when available instead of standard Windows Forms controls
+   - AcrylicUI provides a consistent, modern look aligned with the application's theme
+   - Only use standard Windows Forms controls when there is no AcrylicUI equivalent
+   - Maintain consistent spacing and layout across all forms
+
+2. Form Design:
+   - Follow the established design patterns in existing forms
+   - Use the AcrylicUI color scheme for visual consistency
+   - Implement proper tab ordering for keyboard navigation
+   - Ensure all forms are properly themed with AcrylicUI 
