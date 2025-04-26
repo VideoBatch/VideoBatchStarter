@@ -10,6 +10,8 @@ using System.Runtime.InteropServices;
 using VideoBatch.Services;
 using VideoBatch.UI.Controls;
 using VideoBatch.UI.Forms.Docking;
+using VideoBatch.Model;
+using NodaTime;
 
 namespace VideoBatch.UI.Forms
 {
@@ -251,7 +253,43 @@ namespace VideoBatch.UI.Forms
         }
 
         #region Menu Event Handlers
-        private void NewProject_Click(object sender, EventArgs e) => _logger.LogInformation("New Project clicked");
+        private void NewProject_Click(object sender, EventArgs e)
+        {
+            using (var newProjectForm = new NewProjectForm())
+            {
+                if (newProjectForm.ShowDialog() == DialogResult.OK)
+                {
+                    var projectName = newProjectForm.ProjectName;
+                    var projectLocation = newProjectForm.ProjectLocation;
+                    var projectPath = Path.Combine(projectLocation, $"{projectName}.json");
+
+                    try
+                    {
+                        // Create a new project file
+                        var project = new Project
+                        {
+                            Name = projectName,
+                            DateCreated = SystemClock.Instance.GetCurrentInstant().InZone(DateTimeZone.Utc).LocalDateTime,
+                            DateUpdated = SystemClock.Instance.GetCurrentInstant().InZone(DateTimeZone.Utc).LocalDateTime
+                        };
+
+                        // Save the project
+                        var json = System.Text.Json.JsonSerializer.Serialize(project);
+                        File.WriteAllText(projectPath, json);
+
+                        // Update the project tree
+                        _projectTree.BuildTreeView();
+
+                        _logger.LogInformation($"Created new project: {projectPath}");
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Error creating new project");
+                        MessageBox.Show($"Error creating project: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
         private void OpenProject_Click(object sender, EventArgs e) => _logger.LogInformation("Open Project clicked");
         private void SaveProject_Click(object sender, EventArgs e) => _logger.LogInformation("Save Project clicked");
         private void SaveProjectAs_Click(object sender, EventArgs e) => _logger.LogInformation("Save Project As clicked");
