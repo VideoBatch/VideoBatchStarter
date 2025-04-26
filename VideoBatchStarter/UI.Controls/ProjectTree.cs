@@ -110,6 +110,8 @@ namespace VideoBatch.UI.Controls
 
         public async void BuildTreeView()
         {
+            tvProjectTree.Nodes.Clear(); // Clear existing nodes first
+
             Team team = await _projectServices.GetTeamAsync();
             _logger.LogInformation($"BuildTreeView: Team has {team.Projects.Count} Projects");
             TreeItem node = new(team);

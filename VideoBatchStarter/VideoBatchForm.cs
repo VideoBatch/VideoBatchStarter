@@ -3,6 +3,7 @@ using AcrylicUI.Controls;
 using AcrylicUI.Docking;
 using AcrylicUI.Platform.Windows;
 using AcrylicUI.Resources;
+using AcrylicUI.Forms;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -12,6 +13,7 @@ using VideoBatch.UI.Controls;
 using VideoBatch.UI.Forms.Docking;
 using VideoBatch.Model;
 using NodaTime;
+using NodaTime.Serialization.SystemTextJson;
 
 namespace VideoBatch.UI.Forms
 {
@@ -261,7 +263,29 @@ namespace VideoBatch.UI.Forms
                 {
                     var projectName = newProjectForm.ProjectName;
                     var projectLocation = newProjectForm.ProjectLocation;
-                    var projectPath = Path.Combine(projectLocation, $"{projectName}.json");
+                    // Ensure .json extension (already handled in NewProjectForm.OnFormClosing, but good practice to double-check)
+                    if (!projectName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                    {
+                        projectName += ".json";
+                    }
+                    var projectPath = Path.Combine(projectLocation, projectName);
+
+                    // --- Overwrite Check --- 
+                    if (File.Exists(projectPath))
+                    {
+                        var result = AcrylicMessageBox.ShowWarning(
+                            $"The file '{projectName}' already exists in the selected location.\nDo you want to replace it?",
+                            "Confirm Overwrite",
+                            AcrylicDialogButton.YesNo);
+
+                        if (result != DialogResult.Yes)
+                        {
+                            _logger.LogInformation("User chose not to overwrite existing project file.");
+                            return; // User canceled overwrite
+                        }
+                        _logger.LogWarning($"Overwriting existing project file: {projectPath}");
+                    }
+                    // --- End Overwrite Check ---
 
                     try
                     {
@@ -269,12 +293,16 @@ namespace VideoBatch.UI.Forms
                         var project = new Project
                         {
                             Name = projectName,
-                            DateCreated = SystemClock.Instance.GetCurrentInstant().InZone(DateTimeZone.Utc).LocalDateTime,
-                            DateUpdated = SystemClock.Instance.GetCurrentInstant().InZone(DateTimeZone.Utc).LocalDateTime
+                            DateCreated = SystemClock.Instance.GetCurrentInstant(),
+                            DateUpdated = SystemClock.Instance.GetCurrentInstant()
                         };
 
-                        // Save the project
-                        var json = System.Text.Json.JsonSerializer.Serialize(project);
+                        // Save the project with pretty-printed JSON and NodaTime support
+                        var options = new System.Text.Json.JsonSerializerOptions { 
+                            WriteIndented = true
+                        }.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+                        
+                        var json = System.Text.Json.JsonSerializer.Serialize(project, options);
                         File.WriteAllText(projectPath, json);
 
                         // Update the project tree

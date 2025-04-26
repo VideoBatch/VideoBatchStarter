@@ -8,7 +8,7 @@ using System.ComponentModel;
 
 namespace VideoBatch.UI.Forms
 {
-    public partial class NewProjectForm : AcrylicForm
+    public partial class NewProjectForm : AcrylicDialog
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [Browsable(true)]
@@ -21,8 +21,6 @@ namespace VideoBatch.UI.Forms
         private AcrylicTextBox txtProjectName = new();
         private AcrylicTextBox txtLocation = new();
         private AcrylicButton btnBrowse = new();
-        private AcrylicButton btnCreate = new();
-        private AcrylicButton btnCancel = new();
         private AcrylicLabel lblProjectName = new();
         private AcrylicLabel lblLocation = new();
 
@@ -34,99 +32,104 @@ namespace VideoBatch.UI.Forms
 
         private void InitializeComponent()
         {
-            this.txtProjectName = new AcrylicTextBox();
-            this.txtLocation = new AcrylicTextBox();
-            this.btnBrowse = new AcrylicButton();
-            this.btnCreate = new AcrylicButton();
-            this.btnCancel = new AcrylicButton();
-            this.lblProjectName = new AcrylicLabel();
-            this.lblLocation = new AcrylicLabel();
-            this.SuspendLayout();
-
-            // lblProjectName
-            this.lblProjectName.AutoSize = true;
-            this.lblProjectName.Location = new System.Drawing.Point(12, 15);
-            this.lblProjectName.Name = "lblProjectName";
-            this.lblProjectName.Size = new System.Drawing.Size(74, 13);
-            this.lblProjectName.Text = "Project Name:";
-
+            txtProjectName = new AcrylicTextBox();
+            txtLocation = new AcrylicTextBox();
+            btnBrowse = new AcrylicButton();
+            lblProjectName = new AcrylicLabel();
+            lblLocation = new AcrylicLabel();
+            SuspendLayout();
+            // 
             // txtProjectName
-            this.txtProjectName.Location = new System.Drawing.Point(12, 31);
-            this.txtProjectName.Name = "txtProjectName";
-            this.txtProjectName.Size = new System.Drawing.Size(360, 20);
-            this.txtProjectName.TabIndex = 0;
-
-            // lblLocation
-            this.lblLocation.AutoSize = true;
-            this.lblLocation.Location = new System.Drawing.Point(12, 64);
-            this.lblLocation.Name = "lblLocation";
-            this.lblLocation.Size = new System.Drawing.Size(51, 13);
-            this.lblLocation.Text = "Location:";
-
+            // 
+            txtProjectName.BackColor = Color.FromArgb(31, 31, 31);
+            txtProjectName.BorderStyle = BorderStyle.FixedSingle;
+            txtProjectName.ForeColor = Color.FromArgb(245, 245, 245);
+            txtProjectName.Location = new Point(332, 55);
+            txtProjectName.Name = "txtProjectName";
+            txtProjectName.Size = new Size(728, 55);
+            txtProjectName.TabIndex = 0;
+            // 
             // txtLocation
-            this.txtLocation.Location = new System.Drawing.Point(12, 80);
-            this.txtLocation.Name = "txtLocation";
-            this.txtLocation.Size = new System.Drawing.Size(279, 20);
-            this.txtLocation.TabIndex = 1;
-            this.txtLocation.ReadOnly = true;
-
+            // 
+            txtLocation.BackColor = Color.FromArgb(31, 31, 31);
+            txtLocation.BorderStyle = BorderStyle.FixedSingle;
+            txtLocation.ForeColor = Color.FromArgb(245, 245, 245);
+            txtLocation.Location = new Point(332, 132);
+            txtLocation.Name = "txtLocation";
+            txtLocation.ReadOnly = true;
+            txtLocation.Size = new Size(460, 55);
+            txtLocation.TabIndex = 1;
+            // 
             // btnBrowse
-            this.btnBrowse.Location = new System.Drawing.Point(297, 78);
-            this.btnBrowse.Name = "btnBrowse";
-            this.btnBrowse.Size = new System.Drawing.Size(75, 23);
-            this.btnBrowse.TabIndex = 2;
-            this.btnBrowse.Text = "Browse...";
-            this.btnBrowse.Click += new EventHandler(btnBrowse_Click);
-
-            // btnCreate
-            this.btnCreate.Location = new System.Drawing.Point(216, 120);
-            this.btnCreate.Name = "btnCreate";
-            this.btnCreate.Size = new System.Drawing.Size(75, 23);
-            this.btnCreate.TabIndex = 3;
-            this.btnCreate.Text = "Create";
-            this.btnCreate.Click += new EventHandler(btnCreate_Click);
-
-            // btnCancel
-            this.btnCancel.Location = new System.Drawing.Point(297, 120);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 4;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.Click += new EventHandler(btnCancel_Click);
-
+            // 
+            btnBrowse.Default = false;
+            btnBrowse.Image = null;
+            btnBrowse.ImagePadding = 15;
+            btnBrowse.Location = new Point(814, 131);
+            btnBrowse.Name = "btnBrowse";
+            btnBrowse.Padding = new Padding(5);
+            btnBrowse.Size = new Size(246, 55);
+            btnBrowse.TabIndex = 2;
+            btnBrowse.Text = "Browse...";
+            btnBrowse.UseVisualStyleBackColor = false;
+            btnBrowse.Click += btnBrowse_Click;
+            // 
+            // lblProjectName
+            // 
+            lblProjectName.AutoSize = true;
+            lblProjectName.ForeColor = Color.FromArgb(192, 192, 192);
+            lblProjectName.Location = new Point(67, 57);
+            lblProjectName.Name = "lblProjectName";
+            lblProjectName.Size = new Size(244, 48);
+            lblProjectName.TabIndex = 6;
+            lblProjectName.Text = "Project Name:";
+            // 
+            // lblLocation
+            // 
+            lblLocation.AutoSize = true;
+            lblLocation.ForeColor = Color.FromArgb(192, 192, 192);
+            lblLocation.Location = new Point(148, 139);
+            lblLocation.Name = "lblLocation";
+            lblLocation.Size = new Size(163, 48);
+            lblLocation.TabIndex = 5;
+            lblLocation.Text = "Location:";
+            // 
             // NewProjectForm
-            this.AcceptButton = this.btnCreate;
-            this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(384, 161);
-            this.Controls.Add(this.btnCancel);
-            this.Controls.Add(this.btnCreate);
-            this.Controls.Add(this.btnBrowse);
-            this.Controls.Add(this.txtLocation);
-            this.Controls.Add(this.lblLocation);
-            this.Controls.Add(this.txtProjectName);
-            this.Controls.Add(this.lblProjectName);
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "NewProjectForm";
-            this.StartPosition = FormStartPosition.CenterParent;
-            this.Text = "New Project";
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            // 
+            AutoScaleMode = AutoScaleMode.Dpi;
+            BackColor = Colors.GreyBackground;
+            ClientSize = new Size(1127, 345);
+            Controls.Add(btnBrowse);
+            Controls.Add(txtLocation);
+            Controls.Add(lblLocation);
+            Controls.Add(txtProjectName);
+            Controls.Add(lblProjectName);
+            DialogButtons = AcrylicDialogButton.OkCancel;
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            MaximizeBox = false;
+            MinimizeBox = false;
+            Name = "NewProjectForm";
+            StartPosition = FormStartPosition.CenterParent;
+            Text = "New Project";
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         private void SetupForm()
         {
             // Set default location to My Documents
-            txtLocation.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            txtLocation.Text = documentsPath;
+            txtProjectName.Text = "VideoBatch01.json";
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
         {
+            string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             using (var folderBrowser = new FolderBrowserDialog())
             {
                 folderBrowser.Description = "Select Project Location";
-                folderBrowser.SelectedPath = txtLocation.Text;
+                folderBrowser.SelectedPath = documentsPath;
                 folderBrowser.ShowNewFolderButton = true;
 
                 if (folderBrowser.ShowDialog() == DialogResult.OK)
@@ -136,24 +139,27 @@ namespace VideoBatch.UI.Forms
             }
         }
 
-        private void btnCreate_Click(object sender, EventArgs e)
+        protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtProjectName.Text))
+            if (DialogResult == DialogResult.OK)
             {
-                MessageBox.Show("Please enter a project name.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                if (string.IsNullOrWhiteSpace(txtProjectName.Text))
+                {
+                    MessageBox.Show("Please enter a project name.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    e.Cancel = true;
+                    return;
+                }
+
+                ProjectName = txtProjectName.Text;
+                ProjectLocation = txtLocation.Text;
+
+                // Fix file naming: ensure only one .json extension
+                if (!ProjectName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                {
+                    ProjectName += ".json";
+                }
             }
-
-            ProjectName = txtProjectName.Text;
-            ProjectLocation = txtLocation.Text;
-            DialogResult = DialogResult.OK;
-            Close();
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-            Close();
+            base.OnFormClosing(e);
         }
     }
 } 

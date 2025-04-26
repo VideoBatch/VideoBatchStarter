@@ -7,9 +7,15 @@ A Windows Forms application for batch video processing, built with .NET 9.0 and 
 ### File Menu
 
 #### Project Management
-- **New Project** (Ctrl+N) - ❌ Not implemented
-  - Creates a new video batch processing project
-  - Will support creating a new JSON project file
+- **New Project** (Ctrl+N) - ✅ Implemented
+  - Uses AcrylicDialog for consistent styling and button layout
+  - All controls use AcrylicUI variants
+  - DPI/scaling support implemented (`AutoScaleMode = Dpi`)
+  - Default browse location is now the user's Documents folder
+  - Default project name is set to VideoBatch01.json
+  - Dark theme background is enforced (`BackColor = Colors.GreyBackground`)
+  - Validation and user experience improvements complete
+  - **Status:** Done
 
 - **Open Project** (Ctrl+O) - ❌ Not implemented
   - Opens an existing video batch processing project
