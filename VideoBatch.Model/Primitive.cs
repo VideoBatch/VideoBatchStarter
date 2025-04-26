@@ -1,4 +1,5 @@
-﻿using NodaTime;
+﻿using System;
+using NodaTime;
 
 // Copyright (C) ColhounTech Limited. All rights Reserved
 // Author: Micheal Colhoun
@@ -12,12 +13,12 @@ namespace VideoBatch.Model
         public Guid ParentID { get; set; }
         public abstract string Name { get; set; }
         public abstract string Description { get; set; }
-        public LocalDateTime DateCreated { get; set; } = Zone.UKClock.GetCurrentLocalDateTime();
-        public LocalDateTime DateUpdated { get; set; } = Zone.UKClock.GetCurrentLocalDateTime();  // to be updated on commit
+        public Instant DateCreated { get; set; } = SystemClock.Instance.GetCurrentInstant();
+        public Instant DateUpdated { get; set; } = SystemClock.Instance.GetCurrentInstant();  // to be updated on commit
         public abstract IEnumerable<Primitive> GetEnumerator();
         public override string ToString()
         {
-            return $"{Name} - Created: {DateCreated:yyyy-MMM-dd}";
+            return $"{Name} - Created: {DateCreated.InUtc().ToString("yyyy-MMM-dd", null)}";
         }
     }
 }

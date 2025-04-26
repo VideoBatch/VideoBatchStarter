@@ -1,5 +1,4 @@
 ﻿using NodaTime;
-using NodaTime.Extensions;
 
 // Copyright (C) ColhounTech Limited. All rights Reserved
 // Author: Micheal Colhoun
@@ -7,11 +6,28 @@ using NodaTime.Extensions;
 
 namespace VideoBatch.Model
 {
-    public class Zone
+    public static class Zone
     {
-        public readonly static DateTimeZone UKZone = DateTimeZoneProviders.Tzdb["Europe/London"];
-        public readonly static ZonedClock UKClock = SystemClock.Instance.InZone(UKZone);
+        public static DateTimeZone UKZone => DateTimeZoneProviders.Tzdb["Europe/London"];
 
+        public static Instant GetCurrentInstant()
+        {
+            return SystemClock.Instance.GetCurrentInstant();
+        }
 
+        public static Instant ConvertToUtc(LocalDateTime localTime, DateTimeZone zone)
+        {
+            return localTime.InZoneStrictly(zone).ToInstant();
+        }
+
+        public static LocalDateTime ConvertFromUtc(Instant instant, DateTimeZone targetZone)
+        {
+            return instant.InZone(targetZone).LocalDateTime;
+        }
+
+        public static ZonedDateTime ConvertToZoned(Instant instant, DateTimeZone zone)
+        {
+            return instant.InZone(zone);
+        }
     }
 }
