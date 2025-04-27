@@ -168,7 +168,7 @@ namespace VideoBatch.UI.Controls
             _mnuJobNodeRename.Click += _mnuJobNodeRename_Click;
         }
 
-        private void _mnuJobNodeRename_Click(object sender, EventArgs e)
+        private void _mnuJobNodeRename_Click(object? sender, EventArgs e)
         {
             if (_clickedNode is not null && _clickedNode.Primitive is Job j)
             {
@@ -187,7 +187,7 @@ namespace VideoBatch.UI.Controls
             _clickedNode = null;
         }
 
-        private async void _mnuJobNodeDelete_Click(object sender, EventArgs e)
+        private async void _mnuJobNodeDelete_Click(object? sender, EventArgs e)
         {
             if (_clickedNode is not null)
             {
@@ -213,7 +213,7 @@ namespace VideoBatch.UI.Controls
                             await _projectServices.DeleteJobAsync(j);
 
                             var args = new ProjectTreeEventArgs(_clickedNode);
-                            OnNodeDeleted?.Invoke(sender, args);
+                            OnNodeDeleted?.Invoke(this, args);
                         }
                     }
                 }
@@ -235,7 +235,7 @@ namespace VideoBatch.UI.Controls
                             await _projectServices.DeleteTaskAsync(t);
 
                             var args = new ProjectTreeEventArgs(_clickedNode);
-                            OnNodeDeleted?.Invoke(sender, args);
+                            OnNodeDeleted?.Invoke(this, args);
                         }
                     }
                 }
@@ -243,7 +243,7 @@ namespace VideoBatch.UI.Controls
             _clickedNode = null;
         }
 
-        private void TvProjectTree_SelectedNodesChanged(object sender, EventArgs e)
+        private void TvProjectTree_SelectedNodesChanged(object? sender, EventArgs e)
         {
             if (tvProjectTree.SelectedNodes.Count > 0)
             {
@@ -259,7 +259,7 @@ namespace VideoBatch.UI.Controls
             }
         }
 
-        private void RightMouseClick(object sender, MouseEventArgs e)
+        private void RightMouseClick(object? sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {

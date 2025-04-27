@@ -2,9 +2,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using VideoBatch.Services;
+using VideoBatchApp.Services;
 using VideoBatch.UI.Controls;
 using VideoBatch.UI.Forms;
 using VideoBatch.UI.Forms.Docking;
+using VideoBatchApp;
 
 
 /* TODO : Short Roadmap of non-critical nice to have tsks
@@ -42,6 +44,8 @@ namespace VideoBatchApp
         {
             services
                 .AddLogging(x => x.AddConsole())
+                .AddSingleton<IDataService, JsonDataService>()
+                .AddScoped<IWorkAreaFactory, WorkAreaFactory>()
                 .AddScoped<VideoBatchForm>()
                 .AddScoped<ProjectTree>()
                 .AddScoped<IDocumentationService, DocumentationService>()

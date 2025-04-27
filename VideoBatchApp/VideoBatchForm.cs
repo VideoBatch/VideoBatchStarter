@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using VideoBatch.Services;
+using VideoBatchApp.Services;
 using VideoBatch.UI.Controls;
 using VideoBatch.UI.Forms.Docking;
 using VideoBatch.Model;
@@ -255,7 +256,7 @@ namespace VideoBatch.UI.Forms
         }
 
         #region Menu Event Handlers
-        private void NewProject_Click(object sender, EventArgs e)
+        private void NewProject_Click(object? sender, EventArgs e)
         {
             using (var newProjectForm = new NewProjectForm())
             {
@@ -318,38 +319,38 @@ namespace VideoBatch.UI.Forms
                 }
             }
         }
-        private void OpenProject_Click(object sender, EventArgs e) => _logger.LogInformation("Open Project clicked");
-        private void SaveProject_Click(object sender, EventArgs e) => _logger.LogInformation("Save Project clicked");
-        private void SaveProjectAs_Click(object sender, EventArgs e) => _logger.LogInformation("Save Project As clicked");
-        private void Undo_Click(object sender, EventArgs e) => _logger.LogInformation("Undo clicked");
-        private void Redo_Click(object sender, EventArgs e) => _logger.LogInformation("Redo clicked");
-        private void Cut_Click(object sender, EventArgs e) => _logger.LogInformation("Cut clicked");
-        private void Copy_Click(object sender, EventArgs e) => _logger.LogInformation("Copy clicked");
-        private void Paste_Click(object sender, EventArgs e) => _logger.LogInformation("Paste clicked");
-        private void Delete_Click(object sender, EventArgs e) => _logger.LogInformation("Delete clicked");
-        private void ToggleProjectExplorer_Click(object sender, EventArgs e)
+        private void OpenProject_Click(object? sender, EventArgs e) => _logger.LogInformation("Open Project clicked");
+        private void SaveProject_Click(object? sender, EventArgs e) => _logger.LogInformation("Save Project clicked");
+        private void SaveProjectAs_Click(object? sender, EventArgs e) => _logger.LogInformation("Save Project As clicked");
+        private void Undo_Click(object? sender, EventArgs e) => _logger.LogInformation("Undo clicked");
+        private void Redo_Click(object? sender, EventArgs e) => _logger.LogInformation("Redo clicked");
+        private void Cut_Click(object? sender, EventArgs e) => _logger.LogInformation("Cut clicked");
+        private void Copy_Click(object? sender, EventArgs e) => _logger.LogInformation("Copy clicked");
+        private void Paste_Click(object? sender, EventArgs e) => _logger.LogInformation("Paste clicked");
+        private void Delete_Click(object? sender, EventArgs e) => _logger.LogInformation("Delete clicked");
+        private void ToggleProjectExplorer_Click(object? sender, EventArgs e)
         {
             _logger.LogInformation("Toggle Project Explorer clicked");
             ToggleToolWindow(_projectTree);
         }
-        private void ToggleMediaInspector_Click(object sender, EventArgs e)
+        private void ToggleMediaInspector_Click(object? sender, EventArgs e)
         {
             _logger.LogInformation("Toggle Media Inspector clicked");
             ToggleToolWindow(_mediaInspector);
         }
-        private void ToggleBatchProcessing_Click(object sender, EventArgs e)
+        private void ToggleBatchProcessing_Click(object? sender, EventArgs e)
         {
             _logger.LogInformation("Toggle Batch Processing clicked");
             ToggleToolWindow(_batchProcessing);
         }
-        private void ToggleOutput_Click(object sender, EventArgs e)
+        private void ToggleOutput_Click(object? sender, EventArgs e)
         {
             _logger.LogInformation("Toggle Output clicked");
             ToggleToolWindow(_output);
         }
         // Full screen functionality temporarily disabled
-        //private void ToggleFullScreen_Click(object sender, EventArgs e) => _logger.LogInformation("Toggle Full Screen clicked");
-        private async void ShowDocumentation_Click(object sender, EventArgs e)
+        //private void ToggleFullScreen_Click(object? sender, EventArgs e) => _logger.LogInformation("Toggle Full Screen clicked");
+        private async void ShowDocumentation_Click(object? sender, EventArgs e)
         {
             _logger.LogInformation("Show Documentation clicked");
             try
@@ -366,14 +367,14 @@ namespace VideoBatch.UI.Forms
                     MessageBoxIcon.Error);
             }
         }
-        private void CheckUpdates_Click(object sender, EventArgs e) => _logger.LogInformation("Check Updates clicked");
-        private void ShowAbout_Click(object sender, EventArgs e)
+        private void CheckUpdates_Click(object? sender, EventArgs e) => _logger.LogInformation("Check Updates clicked");
+        private void ShowAbout_Click(object? sender, EventArgs e)
         {
             _logger.LogInformation("Show About clicked");
             AboutForm.Show(this);
         }
 
-        private void ShowSettings_Click(object sender, EventArgs e)
+        private void ShowSettings_Click(object? sender, EventArgs e)
         {
             _logger.LogInformation("Opening Settings dialog");
             var settingsForm = new SettingsForm(_serviceProvider.GetRequiredService<ILogger<SettingsForm>>());
@@ -432,7 +433,7 @@ namespace VideoBatch.UI.Forms
             DockPanel.ContentRemoved += DockPanel_ContentRemoved;
         }
 
-        private void DockPanel_ContentRemoved(object sender, DockContentEventArgs e)
+        private void DockPanel_ContentRemoved(object? sender, DockContentEventArgs e)
         {
             // Update menu item state when content is removed
             UpdateMenuItemState(e.Content, false);
@@ -516,7 +517,7 @@ namespace VideoBatch.UI.Forms
             windowPanel1.SectionHeader = "VideoBatch";
         }
 
-        private void BtnMaximize_Click(object sender, EventArgs e)
+        private void BtnMaximize_Click(object? sender, EventArgs e)
         {
             _restoreSize = ClientSize;
             WindowState = (WindowState == FormWindowState.Normal ? FormWindowState.Maximized : FormWindowState.Normal);
@@ -525,7 +526,7 @@ namespace VideoBatch.UI.Forms
         #endregion
 
         #region Min/Max/Restore for catching resize events to adjust form
-        private void BtnMin_Click(object sender, EventArgs e)
+        private void BtnMin_Click(object? sender, EventArgs e)
         {
             _restoreSize = ClientSize;
             WindowState = FormWindowState.Minimized;
@@ -700,7 +701,7 @@ namespace VideoBatch.UI.Forms
         //private readonly LibraryDock libraryDock;
         #endregion
 
-        private void ExitMenuItem_Click(object sender, EventArgs e)
+        private void ExitMenuItem_Click(object? sender, EventArgs e)
         {
             Close();
         }

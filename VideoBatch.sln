@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoBatch", "VideoBatchStarter\VideoBatch.csproj", "{BFFEB2A8-21D9-4211-B624-3ABD64F5591F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoBatchApp", "VideoBatchApp\VideoBatchApp.csproj", "{BFFEB2A8-21D9-4211-B624-3ABD64F5591F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoBatch.Model", "VideoBatch.Model\VideoBatch.Model.csproj", "{31E579EC-2A9F-4B49-995D-8C62DA6D2B65}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcrylicUI", "..\AcrylicUI\AcrylicUI\AcrylicUI.csproj", "{9325DD86-8DB3-465C-AA80-9101CAA4BBC8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoBatch.Services", "VideoBatch.Services\VideoBatch.Services.csproj", "{2E0C988F-0AAD-4F83-BE0D-C5CF3962A364}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{9325DD86-8DB3-465C-AA80-9101CAA4BBC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9325DD86-8DB3-465C-AA80-9101CAA4BBC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9325DD86-8DB3-465C-AA80-9101CAA4BBC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E0C988F-0AAD-4F83-BE0D-C5CF3962A364}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E0C988F-0AAD-4F83-BE0D-C5CF3962A364}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E0C988F-0AAD-4F83-BE0D-C5CF3962A364}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E0C988F-0AAD-4F83-BE0D-C5CF3962A364}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

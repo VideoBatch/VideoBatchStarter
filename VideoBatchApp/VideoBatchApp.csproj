@@ -14,15 +14,9 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     
-    <!-- Suppress nullability warnings for Windows Forms event handlers -->
-    <NoWarn>$(NoWarn);CS8622;CS8625</NoWarn>
+
   </PropertyGroup>
-  
-  <ItemGroup>
-    <Compile Remove="Controls\**" />
-    <EmbeddedResource Remove="Controls\**" />
-    <None Remove="Controls\**" />
-  </ItemGroup>
+
 
   <ItemGroup>
     <!--<PackageReference Include="AcrylicUI" Version="1.0.*" />-->
@@ -36,10 +30,14 @@
   <ItemGroup>
     <ProjectReference Include="..\..\AcrylicUI\AcrylicUI\AcrylicUI.csproj" />
     <ProjectReference Include="..\VideoBatch.Model\VideoBatch.Model.csproj" />
+    <ProjectReference Include="..\VideoBatch.Services\VideoBatch.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="default.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="README.md">

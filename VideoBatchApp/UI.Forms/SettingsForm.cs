@@ -59,7 +59,7 @@ namespace VideoBatch.UI.Forms
             this.btnApplyAdAuth.Click += BtnApplyAdAuth_Click;
         }
 
-        private void FrmSettings_Load(object sender, EventArgs e)
+        private void FrmSettings_Load(object? sender, EventArgs e)
         {
             _logger.LogInformation("Settings form loaded");
             
@@ -79,7 +79,7 @@ namespace VideoBatch.UI.Forms
             }
         }
 
-        private void BtnLoginLogout_ClickAsync(object sender, EventArgs e)
+        private void BtnLoginLogout_ClickAsync(object? sender, EventArgs e)
         {
             if (!_loggedIn) // then Login
             {
@@ -125,7 +125,7 @@ namespace VideoBatch.UI.Forms
             this.txtTenantID.ReadOnly = false;
         }
 
-        private void BtnOk_Click(object sender, EventArgs e)
+        private void BtnOk_Click(object? sender, EventArgs e)
         {
             if (_isDirty)
             {
@@ -136,13 +136,13 @@ namespace VideoBatch.UI.Forms
             _logger.LogInformation("Closing");
         }
 
-        private void BtnCancel_Click(object sender, EventArgs e)
+        private void BtnCancel_Click(object? sender, EventArgs e)
         {
             _logger.LogInformation("Closing without saving settings");
             this.Close();
         }
 
-        private void LnkUpgrade1_LinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
+        private void LnkUpgrade1_LinkClicked(object? sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
         {
             string target = "https://www.videobatch.co.uk";
             try
@@ -189,7 +189,7 @@ namespace VideoBatch.UI.Forms
             }
         }
 
-        private void BtnApplyAdAuth_Click(object sender, EventArgs e)
+        private void BtnApplyAdAuth_Click(object? sender, EventArgs e)
         {
             try
             {

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Reflection;
 
-namespace VideoBatch.Services
+namespace VideoBatchApp.Services
 {
     /// <summary>
     /// Implementation of IDocumentationService that renders Markdown documentation as HTML

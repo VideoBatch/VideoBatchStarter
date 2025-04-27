@@ -123,7 +123,7 @@ namespace VideoBatch.UI.Forms
             txtProjectName.Text = "VideoBatch01.json";
         }
 
-        private void btnBrowse_Click(object sender, EventArgs e)
+        private void btnBrowse_Click(object? sender, EventArgs e)
         {
             string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             using (var folderBrowser = new FolderBrowserDialog())

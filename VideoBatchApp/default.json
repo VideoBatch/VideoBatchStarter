@@ -1,0 +1,221 @@
+{
+  "Name": "My Account",
+  "Teams": [
+    {
+      "Name": "My Team",
+      "ParentID": "35ac8103-1e91-4834-8f39-587a36b47253",
+      "Projects": [
+        {
+          "Name": "Quick Jobs",
+          "MetaData": {
+            "Icon": "10"
+          },
+          "ParentID": "58b05fdb-8a41-4195-b20a-b7ab5d65e761",
+          "Jobs": [],
+          "ID": "fde3e4be-4f01-46dc-8048-edb0481e1edc",
+          "DateCreated": "2021-08-12T18:40:34.7752883",
+          "DateUpdated": "2021-08-12T18:40:34.7752883"
+        },
+        {
+          "Name": "YouTube Channel",
+          "MetaData": {
+            "Icon": "8"
+          },
+          "ParentID": "58b05fdb-8a41-4195-b20a-b7ab5d65e761",
+          "Jobs": [
+            {
+              "Name": "Job 1",
+              "MetaData": {},
+              "ParentID": "1c2e59d7-f5eb-4a04-aa52-5e1818db10f5",
+              "MediaCollection": [],
+
+              "ID": "622f2f68-4474-49ca-9413-6e123da119c0",
+              "DateCreated": "2021-08-12T18:40:34.8182913",
+              "DateUpdated": "2021-08-12T18:40:34.8182913"
+            }
+          ],
+          "ID": "1c2e59d7-f5eb-4a04-aa52-5e1818db10f5",
+          "DateCreated": "2021-08-12T18:40:34.8092916",
+          "DateUpdated": "2021-08-12T18:40:34.8092916"
+        },
+        {
+          "Name": "YouTube Live Stream",
+          "MetaData": {
+            "Icon": "6"
+          },
+          "ParentID": "58b05fdb-8a41-4195-b20a-b7ab5d65e761",
+          "Jobs": [
+            {
+              "Name": "Job 2",
+              "MetaData": {},
+              "ParentID": "4a10641f-5f71-4e14-8298-7911a6984eb1",
+              "MediaCollection": [],
+
+              "ID": "997d204a-a574-468b-adfb-d77a41628a36",
+              "DateCreated": "2021-08-12T18:40:34.8222904",
+              "DateUpdated": "2021-08-12T18:40:34.8222904"
+            }
+          ],
+          "ID": "4a10641f-5f71-4e14-8298-7911a6984eb1",
+          "DateCreated": "2021-08-12T18:40:34.8222904",
+          "DateUpdated": "2021-08-12T18:40:34.8222904"
+        },
+        {
+          "Name": "Twitch Live Stream",
+          "MetaData": {
+            "Icon": "5"
+          },
+          "ParentID": "58b05fdb-8a41-4195-b20a-b7ab5d65e761",
+          "Jobs": [
+            {
+              "Name": "Job 3",
+              "MetaData": {},
+              "ParentID": "f10027c6-e1ff-40a4-95bc-a12deccadefc",
+              "MediaCollection": [],
+
+              "ID": "8da78691-8d05-4fa9-8ed0-87b73309d002",
+              "DateCreated": "2021-08-12T18:40:34.8222904",
+              "DateUpdated": "2021-08-12T18:40:34.8222904"
+            }
+          ],
+          "ID": "f10027c6-e1ff-40a4-95bc-a12deccadefc",
+          "DateCreated": "2021-08-12T18:40:34.8222904",
+          "DateUpdated": "2021-08-12T18:40:34.8222904"
+        },
+        {
+          "Name": "Online Course Creation",
+          "MetaData": {
+            "Icon": "2"
+          },
+          "ParentID": "58b05fdb-8a41-4195-b20a-b7ab5d65e761",
+          "Jobs": [
+            {
+              "Name": "Job 4",
+              "MetaData": {},
+              "ParentID": "3b392fce-bc32-46a1-9c82-eb75a77594e2",
+              "MediaCollection": [],
+              "ID": "7ae67f30-2ec1-406f-a1e6-3a33b313ce5a",
+              "DateCreated": "2021-08-12T18:40:34.8222904",
+              "DateUpdated": "2021-08-12T18:40:34.8222904"
+            }
+          ],
+          "ID": "3b392fce-bc32-46a1-9c82-eb75a77594e2",
+          "DateCreated": "2021-08-12T18:40:34.8222904",
+          "DateUpdated": "2021-08-12T18:40:34.8222904"
+        },
+        {
+          "Name": "Instagram Stories",
+          "MetaData": {
+            "Icon": "3"
+          },
+          "ParentID": "58b05fdb-8a41-4195-b20a-b7ab5d65e761",
+          "Jobs": [
+            {
+              "Name": "Job 5",
+              "MetaData": {},
+              "ParentID": "4f00afbd-6d1e-430b-88da-f71280fd5134",
+              "MediaCollection": [],
+
+              "ID": "09c8f80c-23d2-405c-bed5-750d78dccae3",
+              "DateCreated": "2021-08-12T18:40:34.8222904",
+              "DateUpdated": "2021-08-12T18:40:34.8222904"
+            }
+          ],
+          "ID": "4f00afbd-6d1e-430b-88da-f71280fd5134",
+          "DateCreated": "2021-08-12T18:40:34.8222904",
+          "DateUpdated": "2021-08-12T18:40:34.8222904"
+        },
+        {
+          "Name": "LinkedIn Videos",
+          "MetaData": {
+            "Icon": "4"
+          },
+          "ParentID": "58b05fdb-8a41-4195-b20a-b7ab5d65e761",
+          "Jobs": [
+            {
+              "Name": "Job 6",
+              "MetaData": {},
+              "ParentID": "be1cc576-d99f-406e-848d-8dd46bc6b43d",
+              "MediaCollection": [],
+              "ID": "7bc2695d-06dd-4a87-a0a9-651c843e4016",
+              "DateCreated": "2021-08-12T18:40:34.8222904",
+              "DateUpdated": "2021-08-12T18:40:34.8222904"
+            }
+          ],
+          "ID": "be1cc576-d99f-406e-848d-8dd46bc6b43d",
+          "DateCreated": "2021-08-12T18:40:34.8222904",
+          "DateUpdated": "2021-08-12T18:40:34.8222904"
+        },
+        {
+          "Name": "Podcast Production",
+          "MetaData": {
+            "Icon": "9"
+          },
+          "ParentID": "58b05fdb-8a41-4195-b20a-b7ab5d65e761",
+          "Jobs": [
+            {
+              "Name": "Job 7",
+              "MetaData": {},
+              "ParentID": "debd16e4-57e3-422a-839c-259bd415270c",
+              "MediaCollection": [],
+              "ID": "124d9bf8-cccd-4aec-aaae-126f7836bafe",
+              "DateCreated": "2021-08-12T18:40:34.8222904",
+              "DateUpdated": "2021-08-12T18:40:34.8222904"
+            }
+          ],
+          "ID": "debd16e4-57e3-422a-839c-259bd415270c",
+          "DateCreated": "2021-08-12T18:40:34.8222904",
+          "DateUpdated": "2021-08-12T18:40:34.8222904"
+        },
+        {
+          "Name": "OBS Recordings",
+          "MetaData": {
+            "Icon": "7"
+          },
+          "ParentID": "58b05fdb-8a41-4195-b20a-b7ab5d65e761",
+          "Jobs": [
+            {
+              "Name": "Job 8",
+              "MetaData": {},
+              "ParentID": "0e0a3a21-4c9a-4523-9641-d215a3731e07",
+              "MediaCollection": [],
+              "ID": "5963c4ca-b236-421d-a037-edd2d9050d5f",
+              "DateCreated": "2021-08-12T18:40:34.8222904",
+              "DateUpdated": "2021-08-12T18:40:34.8222904"
+            }
+          ],
+          "ID": "0e0a3a21-4c9a-4523-9641-d215a3731e07",
+          "DateCreated": "2021-08-12T18:40:34.8222904",
+          "DateUpdated": "2021-08-12T18:40:34.8222904"
+        },
+        {
+          "Name": "Vimeo Archives",
+          "MetaData": {
+            "Icon": "2"
+          },
+          "ParentID": "58b05fdb-8a41-4195-b20a-b7ab5d65e761",
+          "Jobs": [
+            {
+              "Name": "Job 8",
+              "MetaData": {},
+              "ParentID": "94ee9124-f9b9-4c1d-9990-ed9132378772",
+              "MediaCollection": [],
+              "ID": "0e7c1369-bddb-4833-aed3-c1152cf3e33d",
+              "DateCreated": "2021-08-12T18:40:34.8222904",
+              "DateUpdated": "2021-08-12T18:40:34.8222904"
+            }
+          ],
+          "ID": "94ee9124-f9b9-4c1d-9990-ed9132378772",
+          "DateCreated": "2021-08-12T18:40:34.8222904",
+          "DateUpdated": "2021-08-12T18:40:34.8222904"
+        }
+      ],
+      "ID": "58b05fdb-8a41-4195-b20a-b7ab5d65e761",
+      "DateCreated": "2021-08-12T18:40:34.7522887",
+      "DateUpdated": "2021-08-12T18:40:34.7522887"
+    }
+  ],
+  "ID": "35ac8103-1e91-4834-8f39-587a36b47253",
+  "DateCreated": "2021-09-26T16:54:00.0000000",
+  "DateUpdated": "2021-09-26T16:54:00.0000000"
+}
