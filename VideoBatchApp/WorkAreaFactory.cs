@@ -171,7 +171,8 @@ namespace VideoBatchApp // Use main application namespace
         /// </summary>
         private string BuildThemedHtml(string title, string bodyContent)
         {
-            return $"""
+            // Change $ prefix to $$ to allow literal {} in CSS
+            return $$$"""
             <!DOCTYPE html>
             <html>
             <head>
@@ -189,7 +190,7 @@ namespace VideoBatchApp // Use main application namespace
                 {bodyContent}
             </body>
             </html>
-            """;
+            """ ;
         }
 
         /// <summary>
