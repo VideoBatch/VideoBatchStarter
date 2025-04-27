@@ -235,18 +235,25 @@ namespace VideoBatch.UI.Forms.Docking
                     // 1. Create a context
                     var context = new VideoBatchContext();
 
+                    // Set a dummy InputFilePath for testing
+                    context.InputFilePath = "C:\\path\\to\\dummy-input.tmp"; 
+
                     // Add a general note instead (Optional)
                     context.Messages.Add($"Note: Executing '{taskInstance.Name}' via debug runner. Using default/no properties.");
+                    context.Messages.Add($"Note: Providing dummy InputFilePath: {context.InputFilePath}");
 
                     try
                     {
                         // 3. Execute the task
                         VideoBatchContext resultContext = await taskInstance.ExecuteAsync(context);
-                        _logger.LogInformation("Task execution completed. HasError: {HasError}", resultContext.HasError);
+                        _logger.LogInformation("Task execution completed. Input: '{Input}', Output: '{Output}', HasError: {HasError}", 
+                             context.InputFilePath, resultContext.OutputFilePath ?? "<None>", resultContext.HasError);
 
-                        // 4. Display results (e.g., messages)
+                        // 4. Display results (e.g., messages and OutputFilePath)
                         string resultMessage = $"Task '{taskInstance.Name}' executed."
                             + (resultContext.HasError ? " (With Error)" : "")
+                            + $"\nInput Path Provided: {context.InputFilePath ?? "<None>"}"
+                            + $"\nOutput Path Generated: {resultContext.OutputFilePath ?? "<None>"}"
                             + "\n\nMessages:\n" 
                             + string.Join("\n", resultContext.Messages);
 

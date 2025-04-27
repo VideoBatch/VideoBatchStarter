@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics; // For Debug.WriteLine
+using System.IO; // Added for Path.Combine
+using System.Linq; // Added for FirstOrDefault
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using VideoBatch.Model;
@@ -16,7 +18,7 @@ namespace VideoBatch.Tasks.SampleLog
         
         public string Name => "Sample Log Task";
 
-        public string Description => "Logs a configurable message to the debug output window.";
+        public string Description => "Logs a configurable message and demonstrates input/output file path handling.";
 
         // Since we removed Category from the Interface, we remove it here too.
         // public string Category => "Debug";
@@ -41,6 +43,11 @@ namespace VideoBatch.Tasks.SampleLog
         {
             string messageToLog = "No message property provided!"; // Default if not found
 
+            // Log received InputFilePath
+            string inputPathMessage = $"InputFilePath received: {(string.IsNullOrEmpty(context.InputFilePath) ? "<None>" : context.InputFilePath)}";
+            Debug.WriteLine($"[TASK LOG] {inputPathMessage}");
+            context.Messages.Add(inputPathMessage);
+
             // Try to get the message from the context properties
             if (context.Properties.TryGetValue(MessagePropertyName, out object? messageValue) && messageValue is string messageString)
             {
@@ -62,6 +69,42 @@ namespace VideoBatch.Tasks.SampleLog
             string logEntry = $"Executing {Name}: {messageToLog}";
             Debug.WriteLine($"[TASK LOG] {logEntry}");
             context.Messages.Add(logEntry);
+
+            Debug.WriteLine("[TASK TRACE] Entering file creation block...");
+            // --- Create Dummy Output File --- 
+            string outputFilePath = Path.Combine(Path.GetTempPath(), $"SampleLogTaskOutput_{Guid.NewGuid()}.txt");
+            try
+            {
+                Debug.WriteLine("[TASK TRACE] Inside try block...");
+                string fileContent = $"--- SampleLogTask Execution ---\n";
+                fileContent += $"Timestamp: {DateTime.UtcNow:o}\n";
+                fileContent += $"Input Path: {context.InputFilePath ?? "<None>"}\n";
+                fileContent += $"Message Logged: {messageToLog}\n";
+                fileContent += $"Properties Provided: \n";
+                foreach(var prop in context.Properties)
+                {
+                    fileContent += $"  - {prop.Key}: {prop.Value}\n";
+                }
+                
+                Debug.WriteLine($"[TASK TRACE] Attempting to write to: {outputFilePath}");
+                File.WriteAllText(outputFilePath, fileContent);
+                Debug.WriteLine("[TASK TRACE] File write successful.");
+                
+                context.OutputFilePath = outputFilePath; // Set the output path on the context
+                string outputMessage = $"Created dummy output file: {outputFilePath}";
+                 Debug.WriteLine($"[TASK LOG] {outputMessage}");
+                context.Messages.Add(outputMessage);
+            }
+            catch(Exception ex)
+            {
+                string errorMessage = $"Error creating dummy output file ({ex.GetType().Name}): {ex.Message}";
+                 Debug.WriteLine($"[TASK ERROR] {errorMessage}");
+                 Debug.WriteLine($"[TASK ERROR] StackTrace: {ex.StackTrace}");
+                 context.Messages.Add(errorMessage);
+                 context.HasError = true; 
+            }
+            // --------------------------------
+            Debug.WriteLine("[TASK TRACE] Exiting ExecuteAsync method...");
 
             return Task.FromResult(context);
         }
