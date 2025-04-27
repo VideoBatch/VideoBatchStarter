@@ -16,6 +16,7 @@ using VideoBatch.UI.Forms.Docking;
 using VideoBatch.Model;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
+using VideoBatchApp; // Added for IWorkAreaFactory namespace
 
 namespace VideoBatch.UI.Forms
 {
@@ -25,6 +26,7 @@ namespace VideoBatch.UI.Forms
         private readonly IServiceProvider _serviceProvider;
         private readonly ProjectTree _projectTree;
         private readonly IDocumentationService _documentationService;
+        private readonly IWorkAreaFactory _workAreaFactory; // Added WorkAreaFactory
 
         // New docking panels
         private readonly MediaInspectorDock _mediaInspector;
@@ -39,13 +41,15 @@ namespace VideoBatch.UI.Forms
               ILogger<VideoBatchForm> logger,
               IServiceProvider serviceProvider,
               ProjectTree projectTree,
-              IDocumentationService documentationService
+              IDocumentationService documentationService,
+              IWorkAreaFactory workAreaFactory // Inject WorkAreaFactory
             )
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
             _projectTree = projectTree;
             _documentationService = documentationService;
+            _workAreaFactory = workAreaFactory; // Store WorkAreaFactory
 
             // Initialize docking panels
             _mediaInspector = new MediaInspectorDock();
@@ -569,6 +573,13 @@ namespace VideoBatch.UI.Forms
         private void HookEvents()
         {
             Load += new EventHandler(MainWindow_Load!);
+            _projectTree.DoubleClick += ProjectTree_DoubleClick; // Hook ProjectTree DoubleClick
+            // Ensure DockPanel event is hooked if not already
+            if (DockPanel != null) // DockPanel might be initialized later
+            {
+                 DockPanel.ContentRemoved -= DockPanel_ContentRemoved;
+                 DockPanel.ContentRemoved += DockPanel_ContentRemoved;
+            }
         }
 
         private void MainWindow_Load(object? sender, EventArgs e)
@@ -765,6 +776,76 @@ namespace VideoBatch.UI.Forms
         private void ExitMenuItem_Click(object? sender, EventArgs e)
         {
             Close();
+        }
+
+        /// <summary>
+        /// Handles the DoubleClick event from the ProjectTree control.
+        /// </summary>
+        private async void ProjectTree_DoubleClick(object? sender, EventArgs e)
+        {
+            _logger.LogDebug("ProjectTree DoubleClick event received.");
+
+            // Sender should be the AcrylicTreeView within ProjectTree
+            var treeView = sender as AcrylicTreeView;
+            if (treeView == null)
+            {
+                _logger.LogWarning("ProjectTree_DoubleClick sender was not an AcrylicTreeView.");
+                return;
+            }
+
+            var selectedNode = treeView.SelectedNodes?.FirstOrDefault();
+            if (selectedNode == null)
+            {
+                _logger.LogTrace("No node selected on ProjectTree DoubleClick.");
+                return;
+            }
+
+            // Attempt to cast to our custom TreeItem
+            var treeItem = selectedNode as TreeItem;
+            if (treeItem == null)
+            {
+                _logger.LogWarning("Selected node could not be cast to TreeItem. Node Text: {NodeText}", selectedNode.Text);
+                return;
+            }
+
+            // Get the primitive data associated with the node
+            var primitiveData = treeItem.Primitive; // Use the Primitive property from TreeItem
+            if (primitiveData == null)
+            {
+                _logger.LogWarning("TreeItem '{NodeText}' does not have associated Primitive data.", treeItem.Text);
+                return;
+            }
+
+            _logger.LogInformation("Node '{NodeText}' double-clicked. Primitive ID: {PrimitiveId}, Type: {PrimitiveType}", 
+                                 treeItem.Text, primitiveData.ID, primitiveData.GetType().Name);
+
+            try
+            {
+                 _logger.LogDebug("Calling WorkAreaFactory.CreateAsync for ID: {PrimitiveId}", primitiveData.ID);
+                // Use the injected factory to create the WorkArea document
+                WorkArea workArea = await _workAreaFactory.CreateAsync(primitiveData.ID);
+
+                if (workArea != null)
+                {
+                    _logger.LogInformation("WorkArea '{WorkAreaDockText}' created successfully. Adding to DockPanel.", workArea.DockText);
+                    // Add the created document to the main DockPanel
+                    _dockPanel.AddContent(workArea);
+                    workArea.Activate(); // Bring the new tab to the front
+                }
+                else
+                {
+                     _logger.LogWarning("WorkAreaFactory returned null for Primitive ID: {PrimitiveId}", primitiveData.ID);
+                }
+            }
+            catch (Exception ex)
+            {
+                 _logger.LogError(ex, "Failed to create or add WorkArea for Primitive ID: {PrimitiveId}", primitiveData.ID);
+                 MessageBox.Show(this,
+                                 $"Could not open document for '{primitiveData.Name}'.\n\nError: {ex.Message}",
+                                 "Error Opening Document",
+                                 MessageBoxButtons.OK,
+                                 MessageBoxIcon.Error);
+            }
         }
     }
 }
