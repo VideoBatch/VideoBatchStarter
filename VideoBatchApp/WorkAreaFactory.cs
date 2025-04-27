@@ -148,6 +148,8 @@ namespace VideoBatchApp // Use main application namespace
             // Create full HTML document with dark theme CSS
             var htmlContent = BuildThemedHtml(primitive.Name ?? "Details", htmlBody);
 
+            _logger.LogDebug("HTML Content to navigate: {HtmlContent}", htmlContent); // Log the generated HTML
+
             try
             {
                 // Initialize WebView2 and navigate
