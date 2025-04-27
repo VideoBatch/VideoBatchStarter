@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 using VideoBatch.Services;
 using VideoBatchApp.Services;
 using VideoBatch.UI.Controls;
@@ -319,7 +320,67 @@ namespace VideoBatch.UI.Forms
                 }
             }
         }
-        private void OpenProject_Click(object? sender, EventArgs e) => _logger.LogInformation("Open Project clicked");
+        private async void OpenProject_Click(object? sender, EventArgs e)
+        {
+            _logger.LogInformation("Open Project clicked");
+
+            using var openFileDialog = new OpenFileDialog
+            {
+                Filter = "JSON Project Files (*.json)|*.json|All files (*.*)|*.*",
+                Title = "Open Project File",
+                CheckFileExists = true,
+                CheckPathExists = true,
+                RestoreDirectory = true // Remember the last directory
+            };
+
+            if (openFileDialog.ShowDialog(this) == DialogResult.OK)
+            {
+                var filePath = openFileDialog.FileName;
+                _logger.LogInformation("User selected project file: {FilePath}", filePath);
+
+                try
+                {
+                    // Resolve the data service from the service provider
+                    var dataService = _serviceProvider.GetRequiredService<IDataService>();
+
+                    // Load the data - this caches it in the service
+                    Account loadedAccount = await dataService.LoadDataAsync(filePath);
+                    _logger.LogInformation("Successfully loaded data for account: {AccountName}", loadedAccount.Name);
+
+                    // TODO: Trigger ProjectTree population - Needs a method in ProjectTree
+                    // Assuming ProjectTree needs the service to get the loaded data
+                    // _projectTree.LoadAndPopulateTree(); // Or pass filePath/loadedAccount if needed
+                    _logger.LogInformation("Attempting to populate Project Tree (method needs implementation).");
+                    _projectTree.LoadAndPopulateTree(); // Assuming ProjectTree accesses cached data via IDataService
+
+                    // Optional: Update status bar or window title
+                    this.Text = $"VideoBatch - {System.IO.Path.GetFileNameWithoutExtension(filePath)}";
+                    // statusBarLabel.Text = $"Project '{loadedAccount.Name}' loaded.";
+
+                    MessageBox.Show(this, $"Project '{loadedAccount.Name}' loaded successfully.", "Project Loaded", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                }
+                catch (FileNotFoundException fnfEx)
+                {
+                    _logger.LogError(fnfEx, "Selected project file not found: {FilePath}", filePath);
+                    MessageBox.Show(this, $"Error loading project:\nThe specified file was not found.\n\n{filePath}", "File Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (JsonException jsonEx)
+                {
+                    _logger.LogError(jsonEx, "Failed to parse project file: {FilePath}", filePath);
+                    MessageBox.Show(this, $"Error loading project:\nThe file contains invalid JSON data or doesn't match the expected format.\n\n{jsonEx.Message}", "Invalid Project File", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "An unexpected error occurred while loading project file: {FilePath}", filePath);
+                    MessageBox.Show(this, $"An unexpected error occurred while loading the project.\n\n{ex.Message}", "Loading Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                _logger.LogInformation("User cancelled Open Project dialog.");
+            }
+        }
         private void SaveProject_Click(object? sender, EventArgs e) => _logger.LogInformation("Save Project clicked");
         private void SaveProjectAs_Click(object? sender, EventArgs e) => _logger.LogInformation("Save Project As clicked");
         private void Undo_Click(object? sender, EventArgs e) => _logger.LogInformation("Undo clicked");
