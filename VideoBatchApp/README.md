@@ -17,7 +17,7 @@ A Windows Forms application for batch video processing, built with .NET 9.0 and 
   - Validation and user experience improvements complete
   - **Status:** Done
 
-- **Open Project** (Ctrl+O) - ❌ Not implemented
+- **Open Project** (Ctrl+O) - ✅ Implemented
   - Opens an existing video batch processing project
   - Supports JSON project files
 
@@ -113,7 +113,7 @@ A Windows Forms application for batch video processing, built with .NET 9.0 and 
 
 ## Implementation Notes
 
-- Current Version: 1.0.0-beta
+- Current Version: 1.0.5-beta
 - All menu items have logging implemented for tracking usage
 - Dark theme implemented using AcrylicUI
 - Project files use JSON format for compatibility and ease of editing
@@ -123,6 +123,8 @@ A Windows Forms application for batch video processing, built with .NET 9.0 and 
   - Tabbed interface for panels in same dock area
   - Synchronized menu state with panel visibility
   - Close button functionality for all panels
+  - Panel resizing via splitter drag
+- Status bar dynamically displays selected Project Explorer node name (resets after 10s)
 
 ## Development Status
 

@@ -1,5 +1,4 @@
-﻿
-using AcrylicUI.Controls;
+﻿using AcrylicUI.Controls;
 using AcrylicUI.Resources;
 
 namespace VideoBatch.UI.Forms
@@ -115,7 +114,7 @@ namespace VideoBatch.UI.Forms
             statusLabel.AutoSize = false;
             statusLabel.Margin = new Padding(0);
             statusLabel.Name = "statusLabel";
-            statusLabel.Size = new Size(400, 41);
+            statusLabel.Size = new Size(600, 41);
             statusLabel.Text = "Ready";
             statusLabel.TextAlign = ContentAlignment.MiddleLeft;
             // 

@@ -17,6 +17,7 @@ using VideoBatch.Model;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
 using VideoBatchApp; // Added for IWorkAreaFactory namespace
+using System.Windows.Forms; // Added for Timer
 
 namespace VideoBatch.UI.Forms
 {
@@ -36,6 +37,8 @@ namespace VideoBatch.UI.Forms
 
         private readonly Dictionary<string, DockContent> _toolWindows;
         private readonly Dictionary<string, ToolStripMenuItem> _toolWindowMenuItems;
+
+        private System.Windows.Forms.Timer _statusResetTimer; // Added timer
 
         public VideoBatchForm(
               ILogger<VideoBatchForm> logger,
@@ -62,6 +65,7 @@ namespace VideoBatch.UI.Forms
             _toolWindowMenuItems = new Dictionary<string, ToolStripMenuItem>();
 
             InitializeComponent();
+            InitializeStatusTimer(); // Call timer initialization
 
             // Add message filters for docking resize and drag
             Application.AddMessageFilter(DockPanel.DockContentDragFilter);
@@ -80,6 +84,13 @@ namespace VideoBatch.UI.Forms
             RoundCorners(IsWindowsCreatorOrLater());
             DisplayVersion();
             LoadToolWindows();
+        }
+
+        private void InitializeStatusTimer() // New method to setup timer
+        {
+            _statusResetTimer = new System.Windows.Forms.Timer();
+            _statusResetTimer.Interval = 10000; // 10 seconds
+            _statusResetTimer.Tick += StatusResetTimer_Tick;
         }
 
         private void SetupMenuItems()
@@ -671,6 +682,9 @@ namespace VideoBatch.UI.Forms
             
             // Wire up the ProjectTree DoubleClick event
             _projectTree.DoubleClick += ProjectTree_DoubleClick; 
+
+            // Wire up ProjectTree selection change for status bar update
+            _projectTree.SelectedNodesChanged += ProjectTree_SelectedNodeChanged; // Added event handler
         }
 
         private void MainWindow_Load(object? sender, EventArgs e)
@@ -922,6 +936,33 @@ namespace VideoBatch.UI.Forms
                  // Log if the selected node wasn't a TreeItem or didn't have a Primitive in Tag
                  _logger.LogWarning("Selected node \"{NodeText}\" is not a TreeItem with a Primitive Tag.", selectedNode.Text);
             }
+        }
+
+        // Added Handler for ProjectTree selection change
+        private void ProjectTree_SelectedNodeChanged(object? sender, EventArgs e) 
+        {
+            // Assuming EventArgs might need changing if ProjectTreeEventHandler provides more specific args
+            var selectedNode = _projectTree.SelectedNodes?.FirstOrDefault();
+
+            if (selectedNode != null)
+            {
+                statusLabel.Text = $"Selected: {selectedNode.Text}";
+                _statusResetTimer.Stop(); // Reset timer
+                _statusResetTimer.Start();
+            }
+            else
+            {
+                // Optional: Handle node deselection if needed, maybe reset to Ready immediately?
+                 _statusResetTimer.Stop();
+                 statusLabel.Text = "Ready!";
+            }
+        }
+
+        // Added Tick handler for the status reset timer
+        private void StatusResetTimer_Tick(object? sender, EventArgs e)
+        {
+            _statusResetTimer.Stop();
+            statusLabel.Text = "Ready!";
         }
     }
 }

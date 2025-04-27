@@ -332,14 +332,18 @@ namespace VideoBatch.UI.Controls
         {
             if (tvProjectTree.SelectedNodes.Count > 0)
             {
+
                 Console.WriteLine("Selected Nodes");
 
                 SelectedNodesList.Clear();
-                foreach (TreeItem node in tvProjectTree.SelectedNodes)
+                foreach (var node in tvProjectTree.SelectedNodes)
                 {
+                    TreeItem? treeItem = node as TreeItem;
+                    if (treeItem == null) continue;
+
                     SelectedNodesList.Add(node.Text);
-                    Console.WriteLine($"TvProjectTree_SelectedNodesChanged {node.Text} ");
-                    SelectedNodesChanged?.Invoke(this, new ProjectTreeEventArgs(node));
+                    Console.WriteLine($"TvProjectTree_SelectedNodesChanged {treeItem.Text} ");
+                    SelectedNodesChanged?.Invoke(this, new ProjectTreeEventArgs(treeItem));
                 }
             }
         }
