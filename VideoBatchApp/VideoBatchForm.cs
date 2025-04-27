@@ -10,7 +10,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using VideoBatch.Services;
-using VideoBatchApp.Services;
 using VideoBatch.UI.Controls;
 using VideoBatch.UI.Forms.Docking;
 using VideoBatch.Model;
@@ -32,40 +31,41 @@ namespace VideoBatch.UI.Forms
 
         // New docking panels
         private readonly AssetsDock _assets;
-        private readonly TaskExplorerDock _batchProcessing;
+        private readonly TaskExplorerDock _taskExplorerDock;
         private readonly OutputDock _output;
 
         private readonly Dictionary<string, DockContent> _toolWindows;
         private readonly Dictionary<string, ToolStripMenuItem> _toolWindowMenuItems;
 
-        private System.Windows.Forms.Timer _statusResetTimer; // Added timer
+        private System.Windows.Forms.Timer? _statusResetTimer;
 
         public VideoBatchForm(
               ILogger<VideoBatchForm> logger,
               IServiceProvider serviceProvider,
               ProjectTree projectTree,
+              AssetsDock assets,
+              TaskExplorerDock taskExplorerDock,
+              OutputDock output,
               IDocumentationService documentationService,
-              IWorkAreaFactory workAreaFactory, // Inject WorkAreaFactory
-              IRecentFilesService recentFilesService // Inject Recent Files Service
+              IWorkAreaFactory workAreaFactory,
+              IRecentFilesService recentFilesService
             )
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
             _projectTree = projectTree;
+            _assets = assets;
+            _taskExplorerDock = taskExplorerDock;
+            _output = output;
             _documentationService = documentationService;
-            _workAreaFactory = workAreaFactory; // Store WorkAreaFactory
-            _recentFilesService = recentFilesService; // Store Recent Files Service
-
-            // Initialize docking panels
-            _assets = new AssetsDock();
-            _batchProcessing = new TaskExplorerDock();
-            _output = new OutputDock();
+            _workAreaFactory = workAreaFactory;
+            _recentFilesService = recentFilesService;
 
             _toolWindows = new Dictionary<string, DockContent>();
             _toolWindowMenuItems = new Dictionary<string, ToolStripMenuItem>();
 
             InitializeComponent();
-            InitializeStatusTimer(); // Call timer initialization
+            InitializeStatusTimer();
 
             // Add message filters for docking resize and drag
             Application.AddMessageFilter(DockPanel.DockContentDragFilter);
@@ -86,7 +86,7 @@ namespace VideoBatch.UI.Forms
             LoadToolWindows();
         }
 
-        private void InitializeStatusTimer() // New method to setup timer
+        private void InitializeStatusTimer()
         {
             _statusResetTimer = new System.Windows.Forms.Timer();
             _statusResetTimer.Interval = 10000; // 10 seconds
@@ -439,7 +439,7 @@ namespace VideoBatch.UI.Forms
         private void ToggleBatchProcessing_Click(object? sender, EventArgs e)
         {
             _logger.LogInformation("Toggle Batch Processing clicked");
-            ToggleToolWindow(_batchProcessing);
+            ToggleToolWindow(_taskExplorerDock);
         }
         private void ToggleOutput_Click(object? sender, EventArgs e)
         {
@@ -504,13 +504,13 @@ namespace VideoBatch.UI.Forms
 
         private ToolStripMenuItem? GetMenuItemForToolWindow(DockContent toolWindow)
         {
-            if (toolWindow == _projectTree)
+            if (toolWindow is ProjectTree)
                 return GetViewMenuItem("Project Explorer");
-            else if (toolWindow == _assets)
+            else if (toolWindow is AssetsDock)
                 return GetViewMenuItem("Assets");
-            else if (toolWindow == _batchProcessing)
+            else if (toolWindow is TaskExplorerDock)
                 return GetViewMenuItem("Batch Processing");
-            else if (toolWindow == _output)
+            else if (toolWindow is OutputDock)
                 return GetViewMenuItem("Output Window");
             return null;
         }
@@ -612,31 +612,26 @@ namespace VideoBatch.UI.Forms
 
         private void LoadToolWindows()
         {
-            // First add side panels (left and right)
+            // Use the injected fields directly
             _projectTree.DefaultDockArea = DockArea.Left;
-            _projectTree.DockArea = DockArea.Left;
             _projectTree.Width = 300;
             this.DockPanel.AddContent(_projectTree);
 
-            _batchProcessing.DefaultDockArea = DockArea.Right;
-            _batchProcessing.DockArea = DockArea.Right;
-            _batchProcessing.Width = 300;
-            this.DockPanel.AddContent(_batchProcessing);
+            _taskExplorerDock.DefaultDockArea = DockArea.Right;
+            _taskExplorerDock.Width = 300;
+            this.DockPanel.AddContent(_taskExplorerDock);
 
-            // Then add bottom panels - they will appear as tabs since they share the same dock area
             _assets.DefaultDockArea = DockArea.Bottom;
-            _assets.DockArea = DockArea.Bottom;
             _assets.Height = 350;
             this.DockPanel.AddContent(_assets);
 
             _output.DefaultDockArea = DockArea.Bottom;
-            _output.DockArea = DockArea.Bottom;
             _output.Height = 350;
             this.DockPanel.AddContent(_output);
 
             // Add to tool windows list for management
             _toolWindows.Add("ProjectTree", _projectTree);
-            _toolWindows.Add("BatchProcessing", _batchProcessing);
+            _toolWindows.Add("TaskExplorer", _taskExplorerDock);
             _toolWindows.Add("Assets", _assets);
             _toolWindows.Add("Output", _output);
         }
@@ -947,13 +942,13 @@ namespace VideoBatch.UI.Forms
             if (selectedNode != null)
             {
                 statusLabel.Text = $"Selected: {selectedNode.Text}";
-                _statusResetTimer.Stop(); // Reset timer
-                _statusResetTimer.Start();
+                _statusResetTimer?.Stop(); // Reset timer
+                _statusResetTimer?.Start();
             }
             else
             {
                 // Optional: Handle node deselection if needed, maybe reset to Ready immediately?
-                 _statusResetTimer.Stop();
+                 _statusResetTimer?.Stop();
                  statusLabel.Text = "Ready!";
             }
         }
@@ -961,7 +956,7 @@ namespace VideoBatch.UI.Forms
         // Added Tick handler for the status reset timer
         private void StatusResetTimer_Tick(object? sender, EventArgs e)
         {
-            _statusResetTimer.Stop();
+            _statusResetTimer?.Stop();
             statusLabel.Text = "Ready!";
         }
     }

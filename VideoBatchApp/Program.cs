@@ -9,7 +9,6 @@ using VideoBatch.UI.Controls;
 using VideoBatch.UI.Forms;
 using VideoBatch.UI.Forms.Docking;
 using VideoBatchApp;
-using VideoBatchApp.Services;
 
 
 /* TODO : Short Roadmap of non-critical nice to have tsks

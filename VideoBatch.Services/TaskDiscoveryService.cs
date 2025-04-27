@@ -6,9 +6,9 @@ using System.Reflection;
 using Microsoft.Extensions.Logging;
 using VideoBatch.Tasks.Interfaces;
 
-namespace VideoBatchApp.Services // Adjust namespace if needed
+namespace VideoBatch.Services 
 {
-    public class TaskDiscoveryService : ITaskDiscoveryService // Define interface later if preferred
+    public class TaskDiscoveryService : ITaskDiscoveryService 
     {
         private readonly ILogger<TaskDiscoveryService> _logger;
         private List<Type> _discoveredTaskTypes = new List<Type>();
@@ -43,7 +43,7 @@ namespace VideoBatchApp.Services // Adjust namespace if needed
                 catch (Exception ex)
                 {
                      _logger.LogError(ex, "Failed to create task directory: {PluginPath}", fullPluginPath);
-                     return; // Cannot proceed without the directory
+                     return; 
                 }
             }
 
@@ -68,9 +68,9 @@ namespace VideoBatchApp.Services // Adjust namespace if needed
                 catch (ReflectionTypeLoadException ex)
                 {
                     _logger.LogError("Error loading types from {FileName}: {ErrorMessage}", Path.GetFileName(dllFile), ex.Message);
-                    foreach (var loaderEx in ex.LoaderExceptions)
+                    foreach (var loaderEx in ex.LoaderExceptions.Where(l => l != null))
                     {
-                        _logger.LogError(" - LoaderException: {LoaderMessage}", loaderEx?.Message);
+                        _logger.LogError(" - LoaderException: {LoaderMessage}", loaderEx.Message);
                     }
                 }
                 catch (BadImageFormatException)
@@ -85,17 +85,15 @@ namespace VideoBatchApp.Services // Adjust namespace if needed
             _logger.LogInformation("Total task types found: {TotalCount}", _discoveredTaskTypes.Count);
         }
 
-        // Helper to instantiate a task type - consider error handling and constructor parameters/DI later
         public IJobTask? InstantiateTask(Type taskType)
         {
             if (!typeof(IJobTask).IsAssignableFrom(taskType) || taskType.IsAbstract || taskType.IsInterface)
             {
                 _logger.LogWarning("Attempted to instantiate invalid task type: {TaskTypeName}", taskType.FullName);
-                return null; // Not a valid task type
+                return null; 
             }
             try
             {
-                // Assumes parameterless constructor - This might need enhancement if tasks have dependencies
                 return (IJobTask?)Activator.CreateInstance(taskType);
             }
             catch (Exception ex)
@@ -106,7 +104,6 @@ namespace VideoBatchApp.Services // Adjust namespace if needed
         }
     }
 
-    // Optional: Define an interface for the service
     public interface ITaskDiscoveryService
     {
         IEnumerable<Type> DiscoveredTaskTypes { get; }
