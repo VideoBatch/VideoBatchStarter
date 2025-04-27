@@ -134,7 +134,9 @@ namespace VideoBatchApp // Use main application namespace
                     Dock = DockStyle.Fill,
                     ReadOnly = true,
                     Text = jsonText,
-                    Font = new System.Drawing.Font("Consolas", 9.75F), // Use a monospaced font
+                    Font = new System.Drawing.Font("Cascadia Mono", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0))), // Better Mono Font 
+                    ForeColor = System.Drawing.Color.FromArgb(220, 220, 220), // Light text
+                    BackColor = System.Drawing.Color.FromArgb(31, 31, 31),   // Dark background
                     WordWrap = false, // Disable word wrap for better JSON readability
                     ScrollBars = RichTextBoxScrollBars.ForcedBoth // Ensure scrollbars are always visible
                 };

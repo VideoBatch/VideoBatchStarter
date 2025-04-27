@@ -33,7 +33,6 @@ namespace VideoBatch.UI.Forms
         private readonly BatchProcessingDock _batchProcessing;
         private readonly OutputDock _output;
 
-        private readonly DockPanel _dockPanel;
         private readonly Dictionary<string, DockContent> _toolWindows;
         private readonly Dictionary<string, ToolStripMenuItem> _toolWindowMenuItems;
 
@@ -56,16 +55,10 @@ namespace VideoBatch.UI.Forms
             _batchProcessing = new BatchProcessingDock();
             _output = new OutputDock();
 
-            _dockPanel = new DockPanel();
             _toolWindows = new Dictionary<string, DockContent>();
             _toolWindowMenuItems = new Dictionary<string, ToolStripMenuItem>();
 
             InitializeComponent();
-
-            // Configure and add the DockPanel to the form
-            _dockPanel.Dock = DockStyle.Fill; // Fill the form's client area
-            Controls.Add(_dockPanel); // Add the DockPanel to the form's controls
-            _dockPanel.BringToFront(); // Ensure it's layered correctly, especially if other controls exist
 
             // Make sure you set AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             // Program.cs : Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
@@ -367,8 +360,6 @@ namespace VideoBatch.UI.Forms
                     this.Text = $"VideoBatch - {System.IO.Path.GetFileNameWithoutExtension(filePath)}";
                     // statusBarLabel.Text = $"Project '{loadedAccount.Name}' loaded.";
 
-                    MessageBox.Show(this, $"Project '{loadedAccount.Name}' loaded successfully.", "Project Loaded", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
                 }
                 catch (FileNotFoundException fnfEx)
                 {
@@ -517,23 +508,23 @@ namespace VideoBatch.UI.Forms
             _projectTree.DefaultDockArea = DockArea.Left;
             _projectTree.DockArea = DockArea.Left;
             _projectTree.Width = 250;
-            DockPanel.AddContent(_projectTree);
+            this.DockPanel.AddContent(_projectTree);
 
             _batchProcessing.DefaultDockArea = DockArea.Right;
             _batchProcessing.DockArea = DockArea.Right;
             _batchProcessing.Width = 300;
-            DockPanel.AddContent(_batchProcessing);
+            this.DockPanel.AddContent(_batchProcessing);
 
             // Then add bottom panels - they will appear as tabs since they share the same dock area
             _mediaInspector.DefaultDockArea = DockArea.Bottom;
             _mediaInspector.DockArea = DockArea.Bottom;
             _mediaInspector.Height = 200;
-            DockPanel.AddContent(_mediaInspector);
+            this.DockPanel.AddContent(_mediaInspector);
 
             _output.DefaultDockArea = DockArea.Bottom;
             _output.DockArea = DockArea.Bottom;
             _output.Height = 200;
-            DockPanel.AddContent(_output);
+            this.DockPanel.AddContent(_output);
 
             // Add to tool windows list for management
             _toolWindows.Add("ProjectTree", _projectTree);
@@ -579,7 +570,7 @@ namespace VideoBatch.UI.Forms
         private void HookEvents()
         {
             Load += MainWindow_Load;
-            _dockPanel.ContentRemoved += DockPanel_ContentRemoved; // Example if needed
+            DockPanel.ContentRemoved += DockPanel_ContentRemoved; // Example if needed
             
             // Wire up the ProjectTree DoubleClick event
             _projectTree.DoubleClick += ProjectTree_DoubleClick; 
@@ -812,14 +803,14 @@ namespace VideoBatch.UI.Forms
 
                     // Show the WorkArea in the DockPanel
                     // Ensure _dockPanel is the correct instance variable for your DockPanel
-                    if (_dockPanel != null)
+                    if (this.DockPanel != null)
                     {
-                         _dockPanel.AddContent(workArea); // Use AddContent or ShowContent
+                         this.DockPanel.AddContent(workArea);
                          _logger.LogDebug("WorkArea for {PrimitiveName} added to DockPanel.", primitive.Name);
                     }
                     else
                     {
-                        _logger.LogError("_dockPanel is null. Cannot display WorkArea.");
+                        _logger.LogError("this.DockPanel (designer instance) is null. Cannot display WorkArea.");
                     }
                 }
                 catch (Exception ex)
