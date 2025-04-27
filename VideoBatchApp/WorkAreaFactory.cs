@@ -173,26 +173,28 @@ namespace VideoBatchApp // Use main application namespace
         /// </summary>
         private string BuildThemedHtml(string title, string bodyContent)
         {
-            // Change $ prefix to $$ to allow literal {} in CSS and use {{}} for interpolation
-            return $$$"""
+            // Use basic string formatting (Raw string literal interpolation ($$""") caused issues)
+            var htmlTemplate = """
             <!DOCTYPE html>
             <html>
             <head>
                 <meta charset="UTF-8">
-                <title>{{title}}</title>
+                <title>{0}</title> 
                 <style>
-                    body { font-family: Segoe UI, -apple-system, BlinkMacSystemFont, Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif; background-color: #1F1F1F; color: #DCDCDC; padding: 10px; }
-                    h1 { color: #9CDCFE; border-bottom: 1px solid #444; padding-bottom: 5px; margin-top: 0; }
-                    code { font-family: 'Cascadia Mono', Consolas, 'Courier New', monospace; background-color: #2A2A2A; padding: 0.2em 0.4em; border-radius: 3px; }
-                    pre > code { display: block; padding: 10px; background-color: #1A1A1A; border: 1px solid #333; border-radius: 4px; overflow-x: auto; }
+                    /* Adjust base font size for better scaling at high DPI */
+                    body {{ font-family: Segoe UI, -apple-system, BlinkMacSystemFont, Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif; background-color: #1F1F1F; color: #DCDCDC; padding: 0.4em; font-size: .5em; /* Further reduced base size */ }}
+                    h1 {{ color: #9CDCFE; border-bottom: 1px solid #444; padding-bottom: 5px; margin-top: 0; font-size: 1.8em; /* Use relative size */ }}
+                    code {{ font-family: 'Cascadia Mono', Consolas, 'Courier New', monospace; background-color: #2A2A2A; padding: 0.2em 0.4em; border-radius: 3px; }}
+                    pre > code {{ display: block; padding: 10px; background-color: #1A1A1A; border: 1px solid #333; border-radius: 4px; overflow-x: auto; font-size: 1em; /* Ensure code block matches base font size or adjust as needed */ }}
                     /* Add more styles as needed */
                 </style>
             </head>
             <body>
-                {{bodyContent}}
+                {1}
             </body>
             </html>
             """ ;
+             return string.Format(htmlTemplate, title, bodyContent);
         }
 
         /// <summary>
