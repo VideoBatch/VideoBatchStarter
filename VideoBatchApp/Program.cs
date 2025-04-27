@@ -1,6 +1,9 @@
 // Copyright (c) 2025 - ColhounTech Limited
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using System.IO;
 using VideoBatch.Services;
 using VideoBatchApp.Services;
 using VideoBatch.UI.Controls;
@@ -18,10 +21,23 @@ namespace VideoBatchApp
 {
     internal static class Program
     {
+        public static IConfiguration Configuration { get; private set; }
+
         [STAThread]
         static void Main()
         {
             Console.WriteLine("Starting VideoBatch Application...");
+
+            // --- Configuration Setup ---
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Production"}.json", optional: true)
+                .AddEnvironmentVariables();
+
+            Configuration = builder.Build();
+            // ---------------------------
+
             Console.WriteLine($"Current Time: {DateTime.Now}");
 
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
@@ -33,6 +49,16 @@ namespace VideoBatchApp
 
             using (ServiceProvider serviceProvider = services.BuildServiceProvider())
             {
+                var htmlService = serviceProvider.GetService<IHtmlTemplateService>();
+                if (htmlService != null)
+                {
+                   _ = htmlService.LoadCssTemplateAsync();
+                }
+                else
+                {
+                   Console.WriteLine("Warning: IHtmlTemplateService not registered or resolved.");
+                }
+
                 var form = serviceProvider
                     .GetRequiredService<VideoBatchForm>()
                     ;
@@ -42,11 +68,21 @@ namespace VideoBatchApp
 
         private static void ConfigureService(ServiceCollection services)
         {
+            services.AddSingleton(Configuration);
+
+            services.AddLogging(loggingBuilder => {
+                 loggingBuilder.ClearProviders();
+                 loggingBuilder.AddConfiguration(Configuration.GetSection("Logging"));
+                 loggingBuilder.AddConsole();
+             });
+
+            services.Configure<HtmlTemplateOptions>(Configuration.GetSection(HtmlTemplateOptions.Position));
+
             services
-                .AddLogging(x => x.AddConsole())
                 .AddSingleton<IDataService, JsonDataService>()
                 .AddSingleton<IDocumentationService, DocumentationService>()
                 .AddSingleton<IRecentFilesService, RecentFilesService>()
+                .AddSingleton<IHtmlTemplateService, HtmlTemplateService>()
                 .AddScoped<IWorkAreaFactory, WorkAreaFactory>()
                 .AddScoped<VideoBatchForm>()
                 .AddScoped<ProjectTree>()
@@ -58,9 +94,6 @@ namespace VideoBatchApp
                 .AddTransient(sp => sp.GetRequiredService<ILoggerFactory>().CreateLogger<BatchProcessingDock>())
                 .AddTransient(sp => sp.GetRequiredService<ILoggerFactory>().CreateLogger<OutputDock>())
                 .AddTransient(sp => sp.GetRequiredService<ILoggerFactory>().CreateLogger<SettingsForm>())
-                //.AddScoped<CanvasDock>()
-                //.AddScoped<MediaDock>()
-                //.AddScoped<LibraryDock>()
                 ;
         }
     }
