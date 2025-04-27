@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.DirectoryServices.ActiveDirectory;
 using VideoBatch.Model;
 using VideoBatch.UI.Forms;
+using VideoBatch.Services;
 
 namespace VideoBatch.UI.Controls
 {
@@ -25,12 +26,14 @@ namespace VideoBatch.UI.Controls
 
         private readonly ILogger<ProjectTree> _logger;
         private readonly IProjectServices _projectServices;
+        private readonly IDataService _dataService;
         private TreeItem? _clickedNode;
 
-        public ProjectTree(ILogger<ProjectTree> logger, IProjectServices projectServices)
+        public ProjectTree(ILogger<ProjectTree> logger, IProjectServices projectServices, IDataService dataService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _projectServices = projectServices ?? throw new ArgumentNullException(nameof(projectServices));
+            _dataService = dataService ?? throw new ArgumentNullException(nameof(dataService));
             
             InitializeComponent();
             HookEvents();
@@ -108,18 +111,101 @@ namespace VideoBatch.UI.Controls
             }
         }
 
-        public async void BuildTreeView()
+        /// <summary>
+        /// Loads data using IDataService and populates the TreeView.
+        /// This should be called after data has been loaded into IDataService (e.g., via LoadDataAsync).
+        /// </summary>
+        public async void LoadAndPopulateTree()
         {
-            tvProjectTree.Nodes.Clear(); // Clear existing nodes first
+            _logger.LogInformation("Attempting to populate Project Tree from cached data service data.");
+            tvProjectTree.BeginUpdate();
+            tvProjectTree.Nodes.Clear();
 
-            Team team = await _projectServices.GetTeamAsync();
-            _logger.LogInformation($"BuildTreeView: Team has {team.Projects.Count} Projects");
-            TreeItem node = new(team);
-            // TODO: Add icons to TreeView in a future update
-            tvProjectTree.Nodes.Add(node);
+            try
+            {
+                // Get the cached Account object from the data service
+                Account account = await _dataService.GetAccountAsync(); 
+                _logger.LogDebug("Retrieved account '{AccountName}' from data service.", account.Name);
 
-            PopulateTreeRecursive(team, node);
-            node.Nodes.FirstOrDefault()?.EnsureVisible();
+                // Create root node for the account (optional, could start with Teams)
+                // TreeItem accountNode = new TreeItem(account);
+                // tvProjectTree.Nodes.Add(accountNode);
+
+                if (account.Teams == null || !account.Teams.Any())
+                {
+                    _logger.LogWarning("Loaded account '{AccountName}' has no Teams to display.", account.Name);
+                    tvProjectTree.Nodes.Add(new AcrylicTreeNode("No teams found in project.") { Enabled = false });
+                    return; // Exit after clearing
+                }
+
+                // Iterate through Teams
+                foreach (var team in account.Teams)
+                {
+                    TreeItem teamNode = new TreeItem(team);
+                    tvProjectTree.Nodes.Add(teamNode); // Add Teams directly to root
+                    _logger.LogTrace("Added Team node: {TeamName}", team.Name);
+
+                    // Iterate through Projects in the Team
+                    if (team.Projects != null)
+                    {
+                        foreach (var project in team.Projects)
+                        {
+                            TreeItem projectNode = new TreeItem(project);
+                            teamNode.Nodes.Add(projectNode);
+                            _logger.LogTrace("  Added Project node: {ProjectName}", project.Name);
+
+                            // Iterate through Jobs in the Project
+                            if (project.Jobs != null)
+                            {
+                                foreach (var job in project.Jobs)
+                                {
+                                    TreeItem jobNode = new TreeItem(job);
+                                    projectNode.Nodes.Add(jobNode);
+                                    _logger.LogTrace("    Added Job node: {JobName}", job.Name);
+
+                                    // Iterate through Tasks in the Job
+                                    if (job.Tasks != null)
+                                    {
+                                        foreach (var task in job.Tasks)
+                                        {
+                                            TreeItem taskNode = new TreeItem(task);
+                                            jobNode.Nodes.Add(taskNode);
+                                             _logger.LogTrace("      Added Task node: {TaskName}", task.Name);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } 
+
+                // Expand the first level (Team nodes)
+                if (tvProjectTree.Nodes.Any())
+                {
+                    foreach(var node in tvProjectTree.Nodes)
+                    {
+                        node.Expand();
+                    }
+                    tvProjectTree.Nodes[0].EnsureVisible(); 
+                }
+                _logger.LogInformation("Project Tree populated successfully.");
+
+            }
+            catch (InvalidOperationException ioEx)
+            {
+                 _logger.LogError(ioEx, "Failed to populate Project Tree because data service was not loaded.");
+                 tvProjectTree.Nodes.Add(new AcrylicTreeNode("Error: Project data not loaded.") { ForeColor = Color.Red });
+                 // Optionally show a message box or update status bar from the main form
+            }
+            catch (Exception ex)
+            {
+                 _logger.LogError(ex, "An unexpected error occurred while populating the Project Tree.");
+                 tvProjectTree.Nodes.Add(new AcrylicTreeNode("Error populating tree.") { ForeColor = Color.Red });
+            }
+            finally
+            {
+                tvProjectTree.EndUpdate();
+            }
         }
 
         public TreeItem? FindProjectNode(Project p)
