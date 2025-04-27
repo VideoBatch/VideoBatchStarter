@@ -118,7 +118,6 @@ namespace VideoBatch.UI.Controls
         public async void LoadAndPopulateTree()
         {
             _logger.LogInformation("Attempting to populate Project Tree from cached data service data.");
-            tvProjectTree.BeginUpdate();
             tvProjectTree.Nodes.Clear();
 
             try
@@ -134,7 +133,7 @@ namespace VideoBatch.UI.Controls
                 if (account.Teams == null || !account.Teams.Any())
                 {
                     _logger.LogWarning("Loaded account '{AccountName}' has no Teams to display.", account.Name);
-                    tvProjectTree.Nodes.Add(new AcrylicTreeNode("No teams found in project.") { Enabled = false });
+                    tvProjectTree.Nodes.Add(new AcrylicTreeNode("No teams found in project.") /* { Enabled = false } Removed */ );
                     return; // Exit after clearing
                 }
 
@@ -182,9 +181,9 @@ namespace VideoBatch.UI.Controls
                 // Expand the first level (Team nodes)
                 if (tvProjectTree.Nodes.Any())
                 {
-                    foreach(var node in tvProjectTree.Nodes)
+                    foreach(var node in tvProjectTree.Nodes.Cast<AcrylicTreeNode>())
                     {
-                        node.Expand();
+                        node.Expanded = true;
                     }
                     tvProjectTree.Nodes[0].EnsureVisible(); 
                 }
@@ -194,17 +193,13 @@ namespace VideoBatch.UI.Controls
             catch (InvalidOperationException ioEx)
             {
                  _logger.LogError(ioEx, "Failed to populate Project Tree because data service was not loaded.");
-                 tvProjectTree.Nodes.Add(new AcrylicTreeNode("Error: Project data not loaded.") { ForeColor = Color.Red });
+                 tvProjectTree.Nodes.Add(new AcrylicTreeNode("Error: Project data not loaded.") /* { ForeColor = Color.Red } Removed */ );
                  // Optionally show a message box or update status bar from the main form
             }
             catch (Exception ex)
             {
                  _logger.LogError(ex, "An unexpected error occurred while populating the Project Tree.");
-                 tvProjectTree.Nodes.Add(new AcrylicTreeNode("Error populating tree.") { ForeColor = Color.Red });
-            }
-            finally
-            {
-                tvProjectTree.EndUpdate();
+                 tvProjectTree.Nodes.Add(new AcrylicTreeNode("Error populating tree.") /* { ForeColor = Color.Red } Removed */ );
             }
         }
 

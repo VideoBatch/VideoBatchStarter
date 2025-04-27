@@ -5,8 +5,8 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using VideoBatch.Model; // Reference the model project
-// using NodaTime; // Uncomment if used in Model
-// using NodaTime.Serialization.SystemTextJson; // Uncomment if used in Model
+using NodaTime; // Uncomment if used in Model
+using NodaTime.Serialization.SystemTextJson; // Uncomment if used in Model
 
 namespace VideoBatch.Services // Namespace reflects location
 {
@@ -31,8 +31,8 @@ namespace VideoBatch.Services // Namespace reflects location
                 WriteIndented = true
             };
             // Uncomment if NodaTime is used in VideoBatch.Model
-            // _jsonOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
-            _logger.LogInformation("JsonDataService initialized.");
+            _jsonOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+            _logger.LogInformation("JsonDataService initialized with NodaTime support.");
         }
 
         /// <inheritdoc />

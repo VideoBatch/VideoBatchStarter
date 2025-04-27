@@ -312,9 +312,9 @@ namespace VideoBatch.UI.Forms
                         File.WriteAllText(projectPath, json);
 
                         // Update the project tree
-                        _projectTree.BuildTreeView();
+                        // _projectTree.BuildTreeView(); // Commented out: BuildTreeView might be obsolete/incorrect
+                        _logger.LogInformation("Created new project: {projectPath}. ProjectTree needs manual refresh/reload.", projectPath);
 
-                        _logger.LogInformation($"Created new project: {projectPath}");
                     }
                     catch (Exception ex)
                     {
@@ -830,7 +830,7 @@ namespace VideoBatch.UI.Forms
                     _logger.LogInformation("WorkArea '{WorkAreaDockText}' created successfully. Adding to DockPanel.", workArea.DockText);
                     // Add the created document to the main DockPanel
                     _dockPanel.AddContent(workArea);
-                    workArea.Activate(); // Bring the new tab to the front
+                    // workArea.Activate(); // Commented out: May not be needed or correct method for AcrylicUI Docking
                 }
                 else
                 {
