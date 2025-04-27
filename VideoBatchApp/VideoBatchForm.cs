@@ -505,13 +505,26 @@ namespace VideoBatch.UI.Forms
                                                                                           x.Text == "&Output Window" && text == "Output Window");
         }
 
-        protected override void OnLoad(EventArgs e)
+        protected override async void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
             // Hook up to DockPanel events
             DockPanel.ContentRemoved += DockPanel_ContentRemoved;
             // Populate recent files on initial load
-            PopulateRecentFilesMenu(); 
+            PopulateRecentFilesMenu();
+
+            // Auto-load the most recent project if available
+            var recentFiles = _recentFilesService.GetRecentFiles();
+            if (recentFiles.Any()) // Check if the list is not empty
+            {
+                var mostRecentProject = recentFiles.First(); // Get the first (most recent) path
+                _logger.LogInformation("Found recent project(s). Auto-loading most recent: {FilePath}", mostRecentProject);
+                await LoadProjectAsync(mostRecentProject); // Load it
+            }
+            else
+            {
+                 _logger.LogInformation("No recent projects found to auto-load.");
+            }
         }
 
         private void DockPanel_ContentRemoved(object? sender, DockContentEventArgs e)
