@@ -119,6 +119,7 @@ namespace VideoBatchApp // Use main application namespace
             var webView = new WebView2
             {
                 Dock = DockStyle.Fill,
+                DefaultBackgroundColor = System.Drawing.Color.FromArgb(31, 31, 31) // Match body background (#1F1F1F)
             };
             workArea.Controls.Add(webView);
 
