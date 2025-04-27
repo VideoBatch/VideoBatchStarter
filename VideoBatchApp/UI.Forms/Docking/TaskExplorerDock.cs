@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using VideoBatch.Services;
 using Microsoft.Extensions.Logging;
 using VideoBatch.Tasks.Interfaces;
+using VideoBatch.Model;
 using System.Linq; // Added for LINQ methods
 
 namespace VideoBatch.UI.Forms.Docking
@@ -178,7 +179,7 @@ namespace VideoBatch.UI.Forms.Docking
         {
             // Create standard ToolStripMenuItems
             addItem = new ToolStripMenuItem("Add to Workflow (NYI)");
-            propsItem = new ToolStripMenuItem("Show Properties (Debug)");
+            propsItem = new ToolStripMenuItem("Run Task (Debug)");
             refreshItem = new ToolStripMenuItem("Refresh Task List");
 
             // Add items to AcrylicContextMenu
@@ -188,7 +189,7 @@ namespace VideoBatch.UI.Forms.Docking
 
             // Wire up clicks on the ToolStripMenuItems
             addItem.Click += AddItem_Click;
-            propsItem.Click += PropsItem_Click;
+            propsItem.Click += RunTaskMenuItem_Click;
             refreshItem.Click += RefreshItem_Click;
 
             // Keep MouseClick handler for showing the menu
@@ -221,16 +222,43 @@ namespace VideoBatch.UI.Forms.Docking
             }
         }
 
-        private void PropsItem_Click(object? sender, EventArgs e)
+        private async void RunTaskMenuItem_Click(object? sender, EventArgs e)
         {
              if (this.taskTreeView.SelectedNodes.FirstOrDefault()?.Tag is Type taskType)
              {
                 var taskInstance = _taskDiscoveryService.InstantiateTask(taskType);
                 if (taskInstance != null) 
                 {
-                    var props = taskInstance.GetPropertyDefinitions();
-                    var propsText = string.Join("\n", props.Select(p => $"- {p.Name} ({p.Type}): {p.Description}"));
-                    MessageBox.Show($"Properties for {taskInstance.Name}:\n{propsText}", "Task Properties", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // --- Add execution logic --- 
+                    _logger.LogInformation("Attempting to execute task: {TaskName}", taskInstance.Name);
+                    
+                    // 1. Create a context
+                    var context = new VideoBatchContext();
+
+                    // Add a general note instead (Optional)
+                    context.Messages.Add($"Note: Executing '{taskInstance.Name}' via debug runner. Using default/no properties.");
+
+                    try
+                    {
+                        // 3. Execute the task
+                        VideoBatchContext resultContext = await taskInstance.ExecuteAsync(context);
+                        _logger.LogInformation("Task execution completed. HasError: {HasError}", resultContext.HasError);
+
+                        // 4. Display results (e.g., messages)
+                        string resultMessage = $"Task '{taskInstance.Name}' executed."
+                            + (resultContext.HasError ? " (With Error)" : "")
+                            + "\n\nMessages:\n" 
+                            + string.Join("\n", resultContext.Messages);
+
+                         MessageBox.Show(resultMessage, "Task Execution Result", MessageBoxButtons.OK, 
+                            resultContext.HasError ? MessageBoxIcon.Warning : MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Exception during task execution: {TaskName}", taskInstance.Name);
+                         MessageBox.Show($"Error executing task '{taskInstance.Name}':\n{ex.Message}", "Execution Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    // --- End execution logic --- 
                 }
                 else
                 {
