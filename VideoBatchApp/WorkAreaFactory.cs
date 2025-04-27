@@ -183,8 +183,8 @@ namespace VideoBatchApp // Use main application namespace
                 <title>{0}</title> 
                 <style>
                     /* Adjust base font size for better scaling at high DPI */
-                    body {{ font-family: Segoe UI, -apple-system, BlinkMacSystemFont, Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif; background-color: #1F1F1F; color: #DCDCDC; padding: 0.4em; font-size: 7.5pt; /* Further reduced base size */ }}
-                    h1 {{ color: #E0E0E0; /* Changed H1 to light grey */ border-bottom: 1px solid #444; padding-bottom: 5px; margin-top: 0; font-size: 1.8em; /* Use relative size */ }}
+                    body {{ font-family: Segoe UI, -apple-system, BlinkMacSystemFont, Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif; background-color: #1F1F1F; color: #DCDCDC; padding: 0.4em; font-size: 0.5em; /* Further reduced base size */ }}
+                    h1 {{ color: #E0E0E0; /* Changed H1 to light grey */ border-bottom: 1px solid #444; padding-bottom: 5px; margin-top: 0; font-size: 1.2em; /* Use relative size */ }}
                     code {{ font-family: 'Cascadia Mono', Consolas, 'Courier New', monospace; background-color: #2A2A2A; padding: 0.2em 0.4em; border-radius: 3px; }}
                     pre > code {{ display: block; padding: 10px; background-color: #1A1A1A; border: 1px solid #333; border-radius: 4px; overflow-x: auto; font-size: 1em; /* Ensure code block matches base font size or adjust as needed */ }}
                     

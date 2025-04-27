@@ -70,8 +70,8 @@ A Windows Forms application for batch video processing, built with .NET 9.0 and 
   - Supports docking, floating, and closing
   - Menu state syncs with panel visibility
 
-- **Media Inspector** - ✅ Implemented
-  - Toggles the Media Inspector panel visibility
+- **Assets** - ✅ Implemented
+  - Toggles the Assets panel visibility
   - Shows media file properties and metadata
   - Supports docking, floating, and closing
   - Menu state syncs with panel visibility

@@ -30,7 +30,7 @@ namespace VideoBatch.UI.Forms
         private readonly IRecentFilesService _recentFilesService; // Inject Recent Files Service
 
         // New docking panels
-        private readonly MediaInspectorDock _mediaInspector;
+        private readonly AssetsDock _assets;
         private readonly BatchProcessingDock _batchProcessing;
         private readonly OutputDock _output;
 
@@ -54,7 +54,7 @@ namespace VideoBatch.UI.Forms
             _recentFilesService = recentFilesService; // Store Recent Files Service
 
             // Initialize docking panels
-            _mediaInspector = new MediaInspectorDock();
+            _assets = new AssetsDock();
             _batchProcessing = new BatchProcessingDock();
             _output = new OutputDock();
 
@@ -62,6 +62,14 @@ namespace VideoBatch.UI.Forms
             _toolWindowMenuItems = new Dictionary<string, ToolStripMenuItem>();
 
             InitializeComponent();
+
+            // Add message filters for docking resize and drag
+            Application.AddMessageFilter(DockPanel.DockContentDragFilter);
+            Application.AddMessageFilter(DockPanel.DockResizeFilter);
+
+            // Set initial sizes for dock regions (optional, but good practice)
+            // DockPanel.Regions[DockArea.Left].Size = new System.Drawing.Size(300, 0); // Removed - Width set on control directly
+            DockPanel.Regions[DockArea.Bottom].Size = new System.Drawing.Size(0, 350); // Changed height from 150
 
             // Make sure you set AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             // Program.cs : Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
@@ -189,7 +197,7 @@ namespace VideoBatch.UI.Forms
                     Checked = true, 
                     CheckOnClick = true 
                 },
-                new ToolStripMenuItem("&Media Inspector", null, new EventHandler(ToggleMediaInspector_Click))
+                new ToolStripMenuItem("&Assets", null, new EventHandler(ToggleAssets_Click))
                 {
                     BackColor = menuBackColor,
                     ForeColor = menuForeColor,
@@ -412,10 +420,10 @@ namespace VideoBatch.UI.Forms
             _logger.LogInformation("Toggle Project Explorer clicked");
             ToggleToolWindow(_projectTree);
         }
-        private void ToggleMediaInspector_Click(object? sender, EventArgs e)
+        private void ToggleAssets_Click(object? sender, EventArgs e)
         {
-            _logger.LogInformation("Toggle Media Inspector clicked");
-            ToggleToolWindow(_mediaInspector);
+            _logger.LogInformation("Toggle Assets clicked");
+            ToggleToolWindow(_assets);
         }
         private void ToggleBatchProcessing_Click(object? sender, EventArgs e)
         {
@@ -487,8 +495,8 @@ namespace VideoBatch.UI.Forms
         {
             if (toolWindow == _projectTree)
                 return GetViewMenuItem("Project Explorer");
-            else if (toolWindow == _mediaInspector)
-                return GetViewMenuItem("Media Inspector");
+            else if (toolWindow == _assets)
+                return GetViewMenuItem("Assets");
             else if (toolWindow == _batchProcessing)
                 return GetViewMenuItem("Batch Processing");
             else if (toolWindow == _output)
@@ -500,7 +508,7 @@ namespace VideoBatch.UI.Forms
         {
             var viewMenu = menuStrip.Items.OfType<ToolStripMenuItem>().FirstOrDefault(x => x.Text == "&View");
             return viewMenu?.DropDownItems.OfType<ToolStripMenuItem>().FirstOrDefault(x => x.Text == $"Project &Explorer" && text == "Project Explorer" ||
-                                                                                          x.Text == "&Media Inspector" && text == "Media Inspector" ||
+                                                                                          x.Text == "&Assets" && text == "Assets" ||
                                                                                           x.Text == "&Batch Processing" && text == "Batch Processing" ||
                                                                                           x.Text == "&Output Window" && text == "Output Window");
         }
@@ -596,7 +604,7 @@ namespace VideoBatch.UI.Forms
             // First add side panels (left and right)
             _projectTree.DefaultDockArea = DockArea.Left;
             _projectTree.DockArea = DockArea.Left;
-            _projectTree.Width = 250;
+            _projectTree.Width = 300;
             this.DockPanel.AddContent(_projectTree);
 
             _batchProcessing.DefaultDockArea = DockArea.Right;
@@ -605,20 +613,20 @@ namespace VideoBatch.UI.Forms
             this.DockPanel.AddContent(_batchProcessing);
 
             // Then add bottom panels - they will appear as tabs since they share the same dock area
-            _mediaInspector.DefaultDockArea = DockArea.Bottom;
-            _mediaInspector.DockArea = DockArea.Bottom;
-            _mediaInspector.Height = 200;
-            this.DockPanel.AddContent(_mediaInspector);
+            _assets.DefaultDockArea = DockArea.Bottom;
+            _assets.DockArea = DockArea.Bottom;
+            _assets.Height = 350;
+            this.DockPanel.AddContent(_assets);
 
             _output.DefaultDockArea = DockArea.Bottom;
             _output.DockArea = DockArea.Bottom;
-            _output.Height = 200;
+            _output.Height = 350;
             this.DockPanel.AddContent(_output);
 
             // Add to tool windows list for management
             _toolWindows.Add("ProjectTree", _projectTree);
             _toolWindows.Add("BatchProcessing", _batchProcessing);
-            _toolWindows.Add("MediaInspector", _mediaInspector);
+            _toolWindows.Add("Assets", _assets);
             _toolWindows.Add("Output", _output);
         }
 

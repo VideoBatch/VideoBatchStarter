@@ -4,14 +4,14 @@ using AcrylicUI.Resources;
 
 namespace VideoBatch.UI.Forms.Docking
 {
-    public class MediaInspectorDock : ToolWindow
+    public class AssetsDock : ToolWindow
     {
-        public MediaInspectorDock()
+        public AssetsDock()
         {
             InitializeComponent();
             DefaultDockArea = DockArea.Bottom;
-            DockText = "Media Inspector";
-            Text = "Media Inspector";
+            DockText = "Assets";
+            Text = "Assets";
         }
 
         private void InitializeComponent()
@@ -24,6 +24,7 @@ namespace VideoBatch.UI.Forms.Docking
         {
             // Will be implemented later
             // This method will display video metadata and properties
+            // TODO: Consider renaming this method if its purpose changes with the "Assets" concept
         }
     }
 } 
