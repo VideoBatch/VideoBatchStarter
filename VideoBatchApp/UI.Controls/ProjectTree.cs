@@ -141,6 +141,7 @@ namespace VideoBatch.UI.Controls
                 foreach (var team in account.Teams)
                 {
                     TreeItem teamNode = new TreeItem(team);
+                    teamNode.Tag = team; // Assign the team object to the Tag
                     tvProjectTree.Nodes.Add(teamNode); // Add Teams directly to root
                     _logger.LogTrace("Added Team node: {TeamName}", team.Name);
 
@@ -150,6 +151,7 @@ namespace VideoBatch.UI.Controls
                         foreach (var project in team.Projects)
                         {
                             TreeItem projectNode = new TreeItem(project);
+                            projectNode.Tag = project; // Assign the project object to the Tag
                             teamNode.Nodes.Add(projectNode);
                             _logger.LogTrace("  Added Project node: {ProjectName}", project.Name);
 
@@ -159,6 +161,7 @@ namespace VideoBatch.UI.Controls
                                 foreach (var job in project.Jobs)
                                 {
                                     TreeItem jobNode = new TreeItem(job);
+                                    jobNode.Tag = job; // Assign the job object to the Tag
                                     projectNode.Nodes.Add(jobNode);
                                     _logger.LogTrace("    Added Job node: {JobName}", job.Name);
 
@@ -168,6 +171,7 @@ namespace VideoBatch.UI.Controls
                                         foreach (var task in job.Tasks)
                                         {
                                             TreeItem taskNode = new TreeItem(task);
+                                            taskNode.Tag = task; // Assign the task object to the Tag
                                             jobNode.Nodes.Add(taskNode);
                                              _logger.LogTrace("      Added Task node: {TaskName}", task.Name);
                                         }

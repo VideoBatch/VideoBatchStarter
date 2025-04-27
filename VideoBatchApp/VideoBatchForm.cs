@@ -61,6 +61,12 @@ namespace VideoBatch.UI.Forms
             _toolWindowMenuItems = new Dictionary<string, ToolStripMenuItem>();
 
             InitializeComponent();
+
+            // Configure and add the DockPanel to the form
+            _dockPanel.Dock = DockStyle.Fill; // Fill the form's client area
+            Controls.Add(_dockPanel); // Add the DockPanel to the form's controls
+            _dockPanel.BringToFront(); // Ensure it's layered correctly, especially if other controls exist
+
             // Make sure you set AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             // Program.cs : Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
 
@@ -572,14 +578,11 @@ namespace VideoBatch.UI.Forms
         }
         private void HookEvents()
         {
-            Load += new EventHandler(MainWindow_Load!);
-            _projectTree.DoubleClick += ProjectTree_DoubleClick; // Hook ProjectTree DoubleClick
-            // Ensure DockPanel event is hooked if not already
-            if (DockPanel != null) // DockPanel might be initialized later
-            {
-                 DockPanel.ContentRemoved -= DockPanel_ContentRemoved;
-                 DockPanel.ContentRemoved += DockPanel_ContentRemoved;
-            }
+            Load += MainWindow_Load;
+            _dockPanel.ContentRemoved += DockPanel_ContentRemoved; // Example if needed
+            
+            // Wire up the ProjectTree DoubleClick event
+            _projectTree.DoubleClick += ProjectTree_DoubleClick; 
         }
 
         private void MainWindow_Load(object? sender, EventArgs e)
@@ -783,9 +786,7 @@ namespace VideoBatch.UI.Forms
         /// </summary>
         private async void ProjectTree_DoubleClick(object? sender, EventArgs e)
         {
-            _logger.LogDebug("ProjectTree DoubleClick event received.");
-
-            // Sender should be the AcrylicTreeView within ProjectTree
+            // Sender is the AcrylicTreeView within ProjectTree
             var treeView = sender as AcrylicTreeView;
             if (treeView == null)
             {
@@ -800,51 +801,38 @@ namespace VideoBatch.UI.Forms
                 return;
             }
 
-            // Attempt to cast to our custom TreeItem
-            var treeItem = selectedNode as TreeItem;
-            if (treeItem == null)
+            // Check if the selected node is our custom TreeItem and has Primitive data in its Tag
+            if (selectedNode?.Tag is Primitive primitive)
             {
-                _logger.LogWarning("Selected node could not be cast to TreeItem. Node Text: {NodeText}", selectedNode.Text);
-                return;
-            }
-
-            // Get the primitive data associated with the node
-            var primitiveData = treeItem.Primitive; // Use the Primitive property from TreeItem
-            if (primitiveData == null)
-            {
-                _logger.LogWarning("TreeItem '{NodeText}' does not have associated Primitive data.", treeItem.Text);
-                return;
-            }
-
-            _logger.LogInformation("Node '{NodeText}' double-clicked. Primitive ID: {PrimitiveId}, Type: {PrimitiveType}", 
-                                 treeItem.Text, primitiveData.ID, primitiveData.GetType().Name);
-
-            try
-            {
-                 _logger.LogDebug("Calling WorkAreaFactory.CreateAsync for ID: {PrimitiveId}", primitiveData.ID);
-                // Use the injected factory to create the WorkArea document
-                WorkArea workArea = await _workAreaFactory.CreateAsync(primitiveData.ID);
-
-                if (workArea != null)
+                _logger.LogInformation("ProjectTree node double-clicked. Primitive ID: {PrimitiveId}, Name: {PrimitiveName}", primitive.ID, primitive.Name);
+                try
                 {
-                    _logger.LogInformation("WorkArea '{WorkAreaDockText}' created successfully. Adding to DockPanel.", workArea.DockText);
-                    // Add the created document to the main DockPanel
-                    _dockPanel.AddContent(workArea);
-                    // workArea.Activate(); // Commented out: May not be needed or correct method for AcrylicUI Docking
+                    // Use the factory to create the WorkArea
+                    WorkArea workArea = await _workAreaFactory.CreateAsync(primitive.ID);
+
+                    // Show the WorkArea in the DockPanel
+                    // Ensure _dockPanel is the correct instance variable for your DockPanel
+                    if (_dockPanel != null)
+                    {
+                         _dockPanel.AddContent(workArea); // Use AddContent or ShowContent
+                         _logger.LogDebug("WorkArea for {PrimitiveName} added to DockPanel.", primitive.Name);
+                    }
+                    else
+                    {
+                        _logger.LogError("_dockPanel is null. Cannot display WorkArea.");
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                     _logger.LogWarning("WorkAreaFactory returned null for Primitive ID: {PrimitiveId}", primitiveData.ID);
+                    _logger.LogError(ex, "Error creating or showing WorkArea for Primitive ID {PrimitiveId}.", primitive.ID);
+                    // Optionally show an error message to the user
+                    MessageBox.Show($"Failed to open item: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            catch (Exception ex)
+            else
             {
-                 _logger.LogError(ex, "Failed to create or add WorkArea for Primitive ID: {PrimitiveId}", primitiveData.ID);
-                 MessageBox.Show(this,
-                                 $"Could not open document for '{primitiveData.Name}'.\n\nError: {ex.Message}",
-                                 "Error Opening Document",
-                                 MessageBoxButtons.OK,
-                                 MessageBoxIcon.Error);
+                 // Log if the selected node wasn't a TreeItem or didn't have a Primitive in Tag
+                 _logger.LogWarning("Selected node \"{NodeText}\" is not a TreeItem with a Primitive Tag.", selectedNode.Text);
             }
         }
     }
