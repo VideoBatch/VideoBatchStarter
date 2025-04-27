@@ -45,10 +45,11 @@ namespace VideoBatchApp
             services
                 .AddLogging(x => x.AddConsole())
                 .AddSingleton<IDataService, JsonDataService>()
+                .AddSingleton<IDocumentationService, DocumentationService>()
+                .AddSingleton<IRecentFilesService, RecentFilesService>()
                 .AddScoped<IWorkAreaFactory, WorkAreaFactory>()
                 .AddScoped<VideoBatchForm>()
                 .AddScoped<ProjectTree>()
-                .AddScoped<IDocumentationService, DocumentationService>()
                 .AddScoped<IProjectServices, ProjectServices>()
                 .AddScoped<MediaInspectorDock>()
                 .AddScoped<BatchProcessingDock>()

@@ -27,6 +27,7 @@ namespace VideoBatch.UI.Forms
         private readonly ProjectTree _projectTree;
         private readonly IDocumentationService _documentationService;
         private readonly IWorkAreaFactory _workAreaFactory; // Added WorkAreaFactory
+        private readonly IRecentFilesService _recentFilesService; // Inject Recent Files Service
 
         // New docking panels
         private readonly MediaInspectorDock _mediaInspector;
@@ -41,7 +42,8 @@ namespace VideoBatch.UI.Forms
               IServiceProvider serviceProvider,
               ProjectTree projectTree,
               IDocumentationService documentationService,
-              IWorkAreaFactory workAreaFactory // Inject WorkAreaFactory
+              IWorkAreaFactory workAreaFactory, // Inject WorkAreaFactory
+              IRecentFilesService recentFilesService // Inject Recent Files Service
             )
         {
             _logger = logger;
@@ -49,6 +51,7 @@ namespace VideoBatch.UI.Forms
             _projectTree = projectTree;
             _documentationService = documentationService;
             _workAreaFactory = workAreaFactory; // Store WorkAreaFactory
+            _recentFilesService = recentFilesService; // Store Recent Files Service
 
             // Initialize docking panels
             _mediaInspector = new MediaInspectorDock();
@@ -257,6 +260,9 @@ namespace VideoBatch.UI.Forms
                 optionsMenu,
                 helpMenu
             });
+
+            // Hook event for dynamic menu population
+            fileToolStripMenuItem.DropDownOpening += FileToolStripMenuItem_DropDownOpening;
         }
 
         #region Menu Event Handlers
@@ -323,6 +329,52 @@ namespace VideoBatch.UI.Forms
                 }
             }
         }
+
+        /// <summary>
+        /// Attempts to load project data from the specified file path.
+        /// </summary>
+        /// <param name="filePath">The full path to the project JSON file.</param>
+        private async Task LoadProjectAsync(string filePath)
+        {
+            _logger.LogInformation("Attempting to load project from: {FilePath}", filePath);
+            try
+            {
+                // Resolve the data service from the service provider
+                var dataService = _serviceProvider.GetRequiredService<IDataService>();
+
+                // Load the data - this caches it in the service
+                Account loadedAccount = await dataService.LoadDataAsync(filePath);
+                 _logger.LogInformation("Successfully loaded data for account: {AccountName}", loadedAccount.Name);
+
+                // Add to recent files list *after* successful load
+                _recentFilesService.AddRecentFile(filePath);
+                // PopulateRecentFilesMenu(); // Refresh menu (will add this call later)
+
+                // Trigger ProjectTree population
+                 _logger.LogInformation("Populating Project Tree.");
+                _projectTree.LoadAndPopulateTree();
+
+                // Update status bar or window title
+                this.Text = $"VideoBatch - {System.IO.Path.GetFileNameWithoutExtension(filePath)}";
+                // statusBarLabel.Text = $"Project '{loadedAccount.Name}' loaded.";
+            }
+            catch (FileNotFoundException fnfEx)
+            {
+                _logger.LogError(fnfEx, "Selected project file not found: {FilePath}", filePath);
+                MessageBox.Show(this, $"Error loading project:\nThe specified file was not found.\n\n{filePath}", "File Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (JsonException jsonEx)
+            {
+                _logger.LogError(jsonEx, "Failed to parse project file: {FilePath}", filePath);
+                MessageBox.Show(this, $"Error loading project:\nThe file contains invalid JSON data or doesn't match the expected format.\n\n{jsonEx.Message}", "Invalid Project File", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected error occurred while loading project file: {FilePath}", filePath);
+                MessageBox.Show(this, $"An unexpected error occurred while loading the project.\n\n{ex.Message}", "Loading Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private async void OpenProject_Click(object? sender, EventArgs e)
         {
             _logger.LogInformation("Open Project clicked");
@@ -340,42 +392,7 @@ namespace VideoBatch.UI.Forms
             {
                 var filePath = openFileDialog.FileName;
                 _logger.LogInformation("User selected project file: {FilePath}", filePath);
-
-                try
-                {
-                    // Resolve the data service from the service provider
-                    var dataService = _serviceProvider.GetRequiredService<IDataService>();
-
-                    // Load the data - this caches it in the service
-                    Account loadedAccount = await dataService.LoadDataAsync(filePath);
-                    _logger.LogInformation("Successfully loaded data for account: {AccountName}", loadedAccount.Name);
-
-                    // TODO: Trigger ProjectTree population - Needs a method in ProjectTree
-                    // Assuming ProjectTree needs the service to get the loaded data
-                    // _projectTree.LoadAndPopulateTree(); // Or pass filePath/loadedAccount if needed
-                    _logger.LogInformation("Attempting to populate Project Tree (method needs implementation).");
-                    _projectTree.LoadAndPopulateTree(); // Assuming ProjectTree accesses cached data via IDataService
-
-                    // Optional: Update status bar or window title
-                    this.Text = $"VideoBatch - {System.IO.Path.GetFileNameWithoutExtension(filePath)}";
-                    // statusBarLabel.Text = $"Project '{loadedAccount.Name}' loaded.";
-
-                }
-                catch (FileNotFoundException fnfEx)
-                {
-                    _logger.LogError(fnfEx, "Selected project file not found: {FilePath}", filePath);
-                    MessageBox.Show(this, $"Error loading project:\nThe specified file was not found.\n\n{filePath}", "File Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                catch (JsonException jsonEx)
-                {
-                    _logger.LogError(jsonEx, "Failed to parse project file: {FilePath}", filePath);
-                    MessageBox.Show(this, $"Error loading project:\nThe file contains invalid JSON data or doesn't match the expected format.\n\n{jsonEx.Message}", "Invalid Project File", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "An unexpected error occurred while loading project file: {FilePath}", filePath);
-                    MessageBox.Show(this, $"An unexpected error occurred while loading the project.\n\n{ex.Message}", "Loading Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                await LoadProjectAsync(filePath); // Call the refactored method
             }
             else
             {
@@ -493,12 +510,71 @@ namespace VideoBatch.UI.Forms
             base.OnLoad(e);
             // Hook up to DockPanel events
             DockPanel.ContentRemoved += DockPanel_ContentRemoved;
+            // Populate recent files on initial load
+            PopulateRecentFilesMenu(); 
         }
 
         private void DockPanel_ContentRemoved(object? sender, DockContentEventArgs e)
         {
             // Update menu item state when content is removed
             UpdateMenuItemState(e.Content, false);
+        }
+
+        // Handles the File menu opening to refresh the recent projects list
+        private void FileToolStripMenuItem_DropDownOpening(object? sender, EventArgs e)
+        {
+            PopulateRecentFilesMenu();
+        }
+
+        // Populates the "Recent Projects" submenu
+        private void PopulateRecentFilesMenu()
+        {
+            var recentProjectsItem = fileToolStripMenuItem.DropDownItems
+                                          .OfType<ToolStripMenuItem>()
+                                          .FirstOrDefault(item => item.Text == "Recent Pro&jects");
+
+            if (recentProjectsItem == null)
+            {
+                _logger.LogError("Could not find 'Recent Projects' menu item to populate.");
+                return;
+            }
+
+            // Clear existing recent file entries (excluding separators or placeholders)
+            var itemsToRemove = recentProjectsItem.DropDownItems.OfType<ToolStripMenuItem>().ToList();
+            foreach (var item in itemsToRemove)
+            {
+                recentProjectsItem.DropDownItems.Remove(item);
+                item.Dispose(); // Dispose the old item
+            }
+
+            var recentFiles = _recentFilesService.GetRecentFiles();
+
+            if (!recentFiles.Any())
+            {
+                recentProjectsItem.DropDownItems.Add(new ToolStripMenuItem("(No recent projects)") { Enabled = false });
+            }
+            else
+            {
+                for (int i = 0; i < recentFiles.Count; i++)
+                {
+                    var path = recentFiles[i];
+                    var menuItemText = $"&{i + 1} {Path.GetFileName(path)}";
+                    var menuItem = new ToolStripMenuItem(menuItemText);
+                    menuItem.Tag = path; // Store the full path in the Tag
+                    menuItem.ToolTipText = path; // Show full path on hover
+                    menuItem.Click += RecentFile_Click; // Add click handler
+                    recentProjectsItem.DropDownItems.Add(menuItem);
+                }
+            }
+        }
+
+        // Handles clicking on a recent project menu item
+        private async void RecentFile_Click(object? sender, EventArgs e)
+        {
+            if (sender is ToolStripMenuItem menuItem && menuItem.Tag is string filePath)
+            {
+                await LoadProjectAsync(filePath);
+            }
         }
         #endregion
 
