@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoBatch.Services", "Vide
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoBatch.Tasks.Interfaces", "VideoBatch.Tasks.Interfaces\VideoBatch.Tasks.Interfaces.csproj", "{CBFDA5BD-7BF5-4B90-A37B-931BA927AEE9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoBatch.Tasks.SampleLog", "VideoBatch.Tasks.SampleLog\VideoBatch.Tasks.SampleLog.csproj", "{76CACC31-D5DE-4E12-84C6-C1942732C678}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{CBFDA5BD-7BF5-4B90-A37B-931BA927AEE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CBFDA5BD-7BF5-4B90-A37B-931BA927AEE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CBFDA5BD-7BF5-4B90-A37B-931BA927AEE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76CACC31-D5DE-4E12-84C6-C1942732C678}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76CACC31-D5DE-4E12-84C6-C1942732C678}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76CACC31-D5DE-4E12-84C6-C1942732C678}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76CACC31-D5DE-4E12-84C6-C1942732C678}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
