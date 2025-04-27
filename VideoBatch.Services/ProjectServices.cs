@@ -1,8 +1,7 @@
 using Microsoft.Extensions.Logging;
 using VideoBatch.Model;
-using VideoBatch.UI.Controls;
 
-namespace VideoBatchApp.Services
+namespace VideoBatch.Services
 {
     public class ProjectServices : IProjectServices
     {

@@ -28,6 +28,11 @@ namespace VideoBatch.Tasks.Interfaces
         string Description { get; }
 
         /// <summary>
+        /// Category for organizing the task in the UI (e.g., "Audio", "Video", "Download").
+        /// </summary>
+        string Category { get; }
+
+        /// <summary>
         /// Gets the definitions of the properties that this task accepts.
         /// </summary>
         /// <returns>An enumerable collection of TaskProperty definitions.</returns>

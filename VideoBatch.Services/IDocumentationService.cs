@@ -1,4 +1,4 @@
-namespace VideoBatchApp.Services
+namespace VideoBatch.Services
 {
     /// <summary>
     /// Provides functionality for displaying application documentation

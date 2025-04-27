@@ -5,11 +5,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using System.IO;
 using VideoBatch.Services;
-using VideoBatchApp.Services;
 using VideoBatch.UI.Controls;
 using VideoBatch.UI.Forms;
 using VideoBatch.UI.Forms.Docking;
 using VideoBatchApp;
+using VideoBatchApp.Services;
 
 
 /* TODO : Short Roadmap of non-critical nice to have tsks
@@ -49,6 +49,10 @@ namespace VideoBatchApp
 
             using (ServiceProvider serviceProvider = services.BuildServiceProvider())
             {
+                // Discover tasks early
+                var taskDiscovery = serviceProvider.GetService<ITaskDiscoveryService>();
+                taskDiscovery?.DiscoverTasks(); // Call the discovery method
+
                 var htmlService = serviceProvider.GetService<IHtmlTemplateService>();
                 if (htmlService != null)
                 {
@@ -83,15 +87,16 @@ namespace VideoBatchApp
                 .AddSingleton<IDocumentationService, DocumentationService>()
                 .AddSingleton<IRecentFilesService, RecentFilesService>()
                 .AddSingleton<IHtmlTemplateService, HtmlTemplateService>()
+                .AddSingleton<ITaskDiscoveryService, TaskDiscoveryService>()
                 .AddScoped<IWorkAreaFactory, WorkAreaFactory>()
                 .AddScoped<VideoBatchForm>()
                 .AddScoped<ProjectTree>()
                 .AddScoped<IProjectServices, ProjectServices>()
                 .AddScoped<AssetsDock>()
-                .AddScoped<BatchProcessingDock>()
+                .AddScoped<TaskExplorerDock>()
                 .AddScoped<OutputDock>()
                 .AddTransient(sp => sp.GetRequiredService<ILoggerFactory>().CreateLogger<AssetsDock>())
-                .AddTransient(sp => sp.GetRequiredService<ILoggerFactory>().CreateLogger<BatchProcessingDock>())
+                .AddTransient(sp => sp.GetRequiredService<ILoggerFactory>().CreateLogger<TaskExplorerDock>())
                 .AddTransient(sp => sp.GetRequiredService<ILoggerFactory>().CreateLogger<OutputDock>())
                 .AddTransient(sp => sp.GetRequiredService<ILoggerFactory>().CreateLogger<SettingsForm>())
                 ;

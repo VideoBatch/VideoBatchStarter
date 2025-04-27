@@ -1,6 +1,6 @@
 ﻿using VideoBatch.Model;
 
-namespace VideoBatch.UI.Controls
+namespace VideoBatch.Services
 {
     public interface IProjectServices
     {

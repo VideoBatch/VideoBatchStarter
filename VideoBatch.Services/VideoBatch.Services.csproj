@@ -10,10 +10,13 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.4" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.4" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.4" />
+    <PackageReference Include="Markdig" Version="0.35.0" />
+
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\VideoBatch.Model\VideoBatch.Model.csproj" />
+    <ProjectReference Include="..\VideoBatch.Tasks.Interfaces\VideoBatch.Tasks.Interfaces.csproj" />
   </ItemGroup>
 
 </Project>

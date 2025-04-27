@@ -32,7 +32,7 @@ namespace VideoBatch.UI.Forms
 
         // New docking panels
         private readonly AssetsDock _assets;
-        private readonly BatchProcessingDock _batchProcessing;
+        private readonly TaskExplorerDock _batchProcessing;
         private readonly OutputDock _output;
 
         private readonly Dictionary<string, DockContent> _toolWindows;
@@ -58,7 +58,7 @@ namespace VideoBatch.UI.Forms
 
             // Initialize docking panels
             _assets = new AssetsDock();
-            _batchProcessing = new BatchProcessingDock();
+            _batchProcessing = new TaskExplorerDock();
             _output = new OutputDock();
 
             _toolWindows = new Dictionary<string, DockContent>();
