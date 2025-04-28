@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 using System;
-using VideoBatch.UI.Forms.Docking; // Assuming OutputDock is here
+using VideoBatch.Services; // Added for Queue Service
 // using System.Diagnostics; // Removed for Debug.WriteLine
 
 namespace VideoBatch.Logging
@@ -8,13 +8,13 @@ namespace VideoBatch.Logging
     public class OutputDockLogger : ILogger
     {
         private readonly string _categoryName;
-        private readonly OutputDockLoggerProvider _provider;
+        private readonly OutputLogQueueService _queueService;
 
-        // Constructor requires provider and category name (will be updated later for queue service)
-        public OutputDockLogger(string categoryName, OutputDockLoggerProvider provider)
+        // Constructor now requires Queue Service instead of Provider
+        public OutputDockLogger(string categoryName, OutputLogQueueService queueService)
         {
             _categoryName = categoryName;
-            _provider = provider;
+            _queueService = queueService;
         }
 
         // This logger doesn't use scopes
@@ -42,8 +42,8 @@ namespace VideoBatch.Logging
                 logEntry += $"{Environment.NewLine}Exception: {exception}"; // Simple exception logging
             }
 
-            // TODO: Enqueue the logEntry to the Queue Service instead
-            // _provider.OutputDockInstance.AppendLog(logEntry); // REMOVED
+            // Enqueue the log entry
+            _queueService.EnqueueLog(logEntry);
         }
     }
 } 

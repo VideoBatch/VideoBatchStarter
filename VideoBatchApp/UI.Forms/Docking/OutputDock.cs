@@ -2,15 +2,29 @@ using AcrylicUI.Controls;
 using AcrylicUI.Docking;
 using System.Windows.Forms;
 using System.Drawing; // Added for Point
+using VideoBatch.Services; // Added for Queue Service
+using System.Linq; // For DequeueAllLogs
 
 namespace VideoBatch.UI.Forms.Docking
 {
-    public class OutputDock : ToolWindow
+    public partial class OutputDock : ToolWindow // Added partial for Timer disposal
     {
         private AcrylicTextBox logTextBox;
         private AcrylicPanel scrollPanel; // Added Panel
+        private readonly OutputLogQueueService _queueService;
+        private System.Windows.Forms.Timer? _queueTimer;
 
-        public OutputDock()
+        // Constructor now requires Queue Service
+        public OutputDock(OutputLogQueueService queueService)
+        {
+            _queueService = queueService;
+
+            InitializeComponent(); // Call private method to setup controls
+            InitializeQueueTimer();
+        }
+
+        // Separate method to keep constructor clean
+        private void InitializeComponent()
         {
             // Configure the Panel for scrolling
             scrollPanel = new AcrylicPanel
@@ -53,45 +67,92 @@ namespace VideoBatch.UI.Forms.Docking
             this.Text = "Output";
         }
 
-        // Method to append log messages (thread-safe)
-        public void AppendLog(string message)
+        private void InitializeQueueTimer()
         {
-            // DIAGNOSTIC REMOVED
-            // Debug.WriteLine($"[OutputDock.AppendLog] Called. IsHandleCreated: {this.IsHandleCreated}, logTextBox.IsHandleCreated: {logTextBox.IsHandleCreated}, scrollPanel.IsHandleCreated: {scrollPanel.IsHandleCreated}, logTextBox.InvokeRequired: {logTextBox.InvokeRequired}");
+            _queueTimer = new System.Windows.Forms.Timer();
+            _queueTimer.Interval = 250; // Check queue every 250ms
+            _queueTimer.Tick += QueueTimer_Tick;
+            _queueTimer.Start();
+        }
+
+        private void QueueTimer_Tick(object? sender, EventArgs e)
+        {
+            _queueTimer?.Stop(); 
+
+            if (!_queueService.IsEmpty)
+            {
+                var messages = _queueService.DequeueAllLogs().ToList(); 
+
+                if (messages.Any())
+                {
+                    AppendLog(string.Join(Environment.NewLine, messages));
+                }
+            }
+
+            _queueTimer?.Start(); 
+        }
+
+        // Method to append log messages (thread-safe)
+        // This is now called by the QueueTimer_Tick
+        private void AppendLog(string message)
+        {
+            if (this.IsDisposed || logTextBox.IsDisposed) return; // Safety check
 
             if (logTextBox.InvokeRequired)
             {
-                // Debug.WriteLine("[OutputDock.AppendLog] Invoking..."); // DIAGNOSTIC REMOVED
                 try
                 {
                     logTextBox.Invoke(new Action<string>(AppendLog), message);
                 }
-                catch (Exception ex)
-                {
-                     // Debug.WriteLine($"[OutputDock.AppendLog] Exception during Invoke: {ex.Message}"); // DIAGNOSTIC REMOVED
-                     System.Diagnostics.Debug.WriteLine($"[OutputDock] Exception during Invoke: {ex.Message}"); // Keep minimal debug for errors
+                catch (Exception ex) when (ex is ObjectDisposedException || ex is InvalidOperationException)
+                {                    
+                    System.Diagnostics.Debug.WriteLine($"[OutputDock] Exception during Invoke (likely form closing): {ex.Message}");
                 }
             }
             else
             {
-                // Debug.WriteLine("[OutputDock.AppendLog] Executing directly..."); // DIAGNOSTIC REMOVED
                 try
                 {
-                    // Append text
+                    var wasAtBottom = false;
+                    // Check if scrollbar is at the bottom BEFORE appending
+                    if (scrollPanel.VerticalScroll.Visible)
+                    {
+                        wasAtBottom = (scrollPanel.VerticalScroll.Value >= scrollPanel.VerticalScroll.Maximum - scrollPanel.VerticalScroll.LargeChange);
+                    }
+                    else
+                    {
+                        wasAtBottom = true; // No scrollbar means we are effectively at the bottom
+                    }
+
                     logTextBox.AppendText(message + Environment.NewLine);
 
-                    // Auto-scroll the PANEL to the bottom
-                    if (scrollPanel.VerticalScroll.Visible && scrollPanel.VerticalScroll.Maximum > scrollPanel.ClientSize.Height)
+                    // Auto-scroll only if it was already at the bottom
+                    if (wasAtBottom && scrollPanel.VerticalScroll.Visible)
                     {
-                         scrollPanel.AutoScrollPosition = new Point(0, scrollPanel.VerticalScroll.Maximum - scrollPanel.ClientSize.Height);
+                         // Scroll to the new maximum
+                         scrollPanel.ScrollControlIntoView(logTextBox); // Often works better
+                         // Alternative:
+                         // scrollPanel.AutoScrollPosition = new Point(0, scrollPanel.VerticalScroll.Maximum - scrollPanel.ClientSize.Height); 
+                         // scrollPanel.PerformLayout(); // Force layout update after scrolling
                     }
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (ex is ObjectDisposedException || ex is InvalidOperationException)
                 {                     
-                    // Debug.WriteLine($"[OutputDock.AppendLog] Exception during direct execution: {ex.Message}"); // DIAGNOSTIC REMOVED
-                    System.Diagnostics.Debug.WriteLine($"[OutputDock] Exception during direct execution: {ex.Message}"); // Keep minimal debug for errors
+                    System.Diagnostics.Debug.WriteLine($"[OutputDock] Exception during direct execution (likely form closing): {ex.Message}");
                 } 
             }
+        }
+
+        // Dispose the timer
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _queueTimer?.Stop();
+                _queueTimer?.Dispose();
+                _queueTimer = null;
+            }
+            base.Dispose(disposing);
         }
     }
 } 

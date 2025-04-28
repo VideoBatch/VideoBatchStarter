@@ -73,16 +73,26 @@ namespace VideoBatchApp
 
             // --- Register OutputDock Logger Components ---
             services.AddSingleton<OutputDock>();
-            services.AddSingleton<OutputDockLoggerProvider>();
+            services.AddSingleton<OutputLogQueueService>();
+            // OutputDockLoggerProvider is now registered below within AddLogging
+            // services.AddSingleton<OutputDockLoggerProvider>(); // REMOVED from here
             // -------------------------------------------
 
             services.AddLogging(loggingBuilder => {
                  loggingBuilder.ClearProviders();
                  loggingBuilder.AddConfiguration(Configuration.GetSection("Logging"));
                  loggingBuilder.AddConsole();
-                 // Add the provider (it no longer needs the OutputDock instance directly)
-                 using var tempProvider = services.BuildServiceProvider(); 
-                 loggingBuilder.AddProvider(tempProvider.GetRequiredService<OutputDockLoggerProvider>());
+                 
+                 // --- CORRECT WAY TO ADD PROVIDER VIA DI ---
+                 // Register the provider type with the service collection.
+                 // The logging infrastructure will resolve it later using the main ServiceProvider,
+                 // ensuring it gets the correct singleton OutputLogQueueService.
+                 loggingBuilder.Services.AddSingleton<ILoggerProvider, OutputDockLoggerProvider>(); 
+                 // -------------------------------------------
+
+                 // REMOVED Incorrect resolution:
+                 // using var tempProvider = services.BuildServiceProvider(); 
+                 // loggingBuilder.AddProvider(tempProvider.GetRequiredService<OutputDockLoggerProvider>());
              });
 
             services.Configure<HtmlTemplateOptions>(Configuration.GetSection(HtmlTemplateOptions.Position));
