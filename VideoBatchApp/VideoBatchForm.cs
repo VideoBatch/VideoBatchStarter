@@ -285,7 +285,7 @@ namespace VideoBatch.UI.Forms
         }
 
         #region Menu Event Handlers
-        private async void NewProject_Click(object? sender, EventArgs e)
+        private void NewProject_Click(object? sender, EventArgs e)
         {
             using (var newProjectForm = new NewProjectForm())
             {
@@ -334,13 +334,10 @@ namespace VideoBatch.UI.Forms
                         
                         var json = System.Text.Json.JsonSerializer.Serialize(project, options);
                         File.WriteAllText(projectPath, json);
-                        _logger.LogInformation("Created new project file: {projectPath}", projectPath);
 
-                        // --- ADDED: Load new project and refresh tree ---
-                        // Use the existing LoadProjectAsync which handles DataService and Tree refresh
-                        await LoadProjectAsync(projectPath); 
-                        _logger.LogInformation("Loaded new project into view.");
-                        // --- END ADDED ---
+                        // Update the project tree
+                        // _projectTree.BuildTreeView(); // Commented out: BuildTreeView might be obsolete/incorrect
+                        _logger.LogInformation("Created new project: {projectPath}. ProjectTree needs manual refresh/reload.", projectPath);
 
                     }
                     catch (Exception ex)
@@ -368,17 +365,34 @@ namespace VideoBatch.UI.Forms
                 Account loadedAccount = await dataService.LoadDataAsync(filePath);
                  _logger.LogInformation("Successfully loaded data for account: {AccountName}", loadedAccount.Name);
 
+                // --- ADDED: Close existing document tabs --- 
+                _logger.LogInformation("Closing existing document tabs...");
+                var documentsToClose = this.DockPanel.GetDocuments().ToList(); // Create a copy to iterate over
+                foreach (var doc in documentsToClose) // Changed variable name for clarity
+                {
+                    // WorkArea inherits from Document, so this should still work
+                    if (doc is WorkArea)
+                    {
+                        _logger.LogDebug("Closing document: {DocumentTitle}", doc.DockText);
+                        this.DockPanel.RemoveContent(doc);
+                    }
+                    // else if (doc is SomeOtherDocumentType) // Add checks for other document types if necessary
+                    // {
+                    //    this.DockPanel.RemoveContent(doc);
+                    // } 
+                }
+                 _logger.LogInformation("Finished closing document tabs.");
+                 // --- END ADDED ---
+
                 // Add to recent files list *after* successful load
                 _recentFilesService.AddRecentFile(filePath);
-                // PopulateRecentFilesMenu(); // Refresh menu (will add this call later)
 
-                // Trigger ProjectTree population
+                // Trigger ProjectTree population for the new project
                  _logger.LogInformation("Populating Project Tree.");
                 _projectTree.LoadAndPopulateTree();
 
                 // Update status bar or window title
                 this.Text = $"VideoBatch - {System.IO.Path.GetFileNameWithoutExtension(filePath)}";
-                // statusBarLabel.Text = $"Project '{loadedAccount.Name}' loaded.";
             }
             catch (FileNotFoundException fnfEx)
             {
