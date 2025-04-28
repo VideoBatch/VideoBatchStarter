@@ -285,7 +285,7 @@ namespace VideoBatch.UI.Forms
         }
 
         #region Menu Event Handlers
-        private void NewProject_Click(object? sender, EventArgs e)
+        private async void NewProject_Click(object? sender, EventArgs e)
         {
             using (var newProjectForm = new NewProjectForm())
             {
@@ -334,10 +334,13 @@ namespace VideoBatch.UI.Forms
                         
                         var json = System.Text.Json.JsonSerializer.Serialize(project, options);
                         File.WriteAllText(projectPath, json);
+                        _logger.LogInformation("Created new project file: {projectPath}", projectPath);
 
-                        // Update the project tree
-                        // _projectTree.BuildTreeView(); // Commented out: BuildTreeView might be obsolete/incorrect
-                        _logger.LogInformation("Created new project: {projectPath}. ProjectTree needs manual refresh/reload.", projectPath);
+                        // --- ADDED: Load new project and refresh tree ---
+                        // Use the existing LoadProjectAsync which handles DataService and Tree refresh
+                        await LoadProjectAsync(projectPath); 
+                        _logger.LogInformation("Loaded new project into view.");
+                        // --- END ADDED ---
 
                     }
                     catch (Exception ex)
