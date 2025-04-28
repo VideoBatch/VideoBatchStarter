@@ -82,7 +82,7 @@ namespace VideoBatch.UI.Controls
             }
         }
 
-        // AddTask
+        // AddTask - Reverted to original signature
         public void AddTask(TreeItem newNode, Project parent, Job j)
         {
             if (j is not null)

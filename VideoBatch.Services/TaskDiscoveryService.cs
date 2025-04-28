@@ -6,7 +6,7 @@ using System.Reflection;
 using Microsoft.Extensions.Logging;
 using VideoBatch.Tasks.Interfaces;
 
-namespace VideoBatch.Services 
+namespace VideoBatch.Services // Ensure this namespace is correct
 {
     public class TaskDiscoveryService : ITaskDiscoveryService 
     {
@@ -23,7 +23,7 @@ namespace VideoBatch.Services
         public void DiscoverTasks(string pluginDirectory = "Tasks")
         {
             _discoveredTaskTypes.Clear();
-            var taskInterfaceType = typeof(IJobTask);
+            var taskInterfaceType = typeof(IBatchTask);
             var currentAppPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             if (string.IsNullOrEmpty(currentAppPath))
             {
@@ -43,7 +43,7 @@ namespace VideoBatch.Services
                 catch (Exception ex)
                 {
                      _logger.LogError(ex, "Failed to create task directory: {PluginPath}", fullPluginPath);
-                     return; 
+                     return; // Cannot proceed without the directory
                 }
             }
 
@@ -85,16 +85,18 @@ namespace VideoBatch.Services
             _logger.LogInformation("Total task types found: {TotalCount}", _discoveredTaskTypes.Count);
         }
 
-        public IJobTask? InstantiateTask(Type taskType)
+        // Helper to instantiate a task type - consider error handling and constructor parameters/DI later
+        public IBatchTask? InstantiateTask(Type taskType)
         {
-            if (!typeof(IJobTask).IsAssignableFrom(taskType) || taskType.IsAbstract || taskType.IsInterface)
+            if (!typeof(IBatchTask).IsAssignableFrom(taskType) || taskType.IsAbstract || taskType.IsInterface)
             {
                 _logger.LogWarning("Attempted to instantiate invalid task type: {TaskTypeName}", taskType.FullName);
-                return null; 
+                return null; // Not a valid task type
             }
             try
             {
-                return (IJobTask?)Activator.CreateInstance(taskType);
+                // Assumes parameterless constructor - This might need enhancement if tasks have dependencies
+                return (IBatchTask?)Activator.CreateInstance(taskType);
             }
             catch (Exception ex)
             {
@@ -104,11 +106,12 @@ namespace VideoBatch.Services
         }
     }
 
+    // Optional: Define an interface for the service
     public interface ITaskDiscoveryService
     {
         IEnumerable<Type> DiscoveredTaskTypes { get; }
         void DiscoverTasks(string pluginDirectory = "Tasks");
-        IJobTask? InstantiateTask(Type taskType);
+        IBatchTask? InstantiateTask(Type taskType);
     }
 
 } 

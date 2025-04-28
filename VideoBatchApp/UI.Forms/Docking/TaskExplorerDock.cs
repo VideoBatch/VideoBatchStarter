@@ -8,6 +8,8 @@ using Microsoft.Extensions.Logging;
 using VideoBatch.Tasks.Interfaces;
 using VideoBatch.Model;
 using System.Linq; // Added for LINQ methods
+using System.Threading;
+// using VideoBatch.UI.Controls; // Removed ProjectTree using
 
 namespace VideoBatch.UI.Forms.Docking
 {
@@ -17,14 +19,22 @@ namespace VideoBatch.UI.Forms.Docking
         // Rename field
         private AcrylicTreeView taskTreeView; 
         private readonly ITaskDiscoveryService _taskDiscoveryService;
+        // private readonly IProjectServices _projectServices; // <<< REMOVED
+        // private readonly ProjectTree _projectTree; // <<< REMOVED
         private readonly ILogger<TaskExplorerDock> _logger;
         private IconFactory? _iconFactory;
 
         // Update constructor for DI
-        public TaskExplorerDock(ITaskDiscoveryService taskDiscoveryService, ILogger<TaskExplorerDock> logger)
+        public TaskExplorerDock(
+            ITaskDiscoveryService taskDiscoveryService, 
+            // IProjectServices projectServices, // <<< REMOVED
+            // ProjectTree projectTree, // <<< REMOVED
+            ILogger<TaskExplorerDock> logger)
         {
             // InitializeComponent(); // Remove this call
             _taskDiscoveryService = taskDiscoveryService;
+            // _projectServices = projectServices; // <<< REMOVED
+            // _projectTree = projectTree; // <<< REMOVED
             _logger = logger;
 
             // Create and configure TreeView programmatically
@@ -245,7 +255,8 @@ namespace VideoBatch.UI.Forms.Docking
                     try
                     {
                         // 3. Execute the task
-                        VideoBatchContext resultContext = await taskInstance.ExecuteAsync(context);
+                        // Pass CancellationToken.None for now as this debug runner doesn't have cancellation UI
+                        VideoBatchContext resultContext = await taskInstance.ExecuteAsync(context, CancellationToken.None); 
                         _logger.LogInformation("Task execution completed. Input: '{Input}', Output: '{Output}', HasError: {HasError}", 
                              context.InputFilePath, resultContext.OutputFilePath ?? "<None>", resultContext.HasError);
 

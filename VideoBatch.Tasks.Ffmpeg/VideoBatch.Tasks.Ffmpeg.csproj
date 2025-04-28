@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VideoBatch.Model\VideoBatch.Model.csproj" />
+    <ProjectReference Include="..\VideoBatch.Tasks.Interfaces\VideoBatch.Tasks.Interfaces.csproj" />
+    <ProjectReference Include="..\VideoBatch.Tasks.Sdk\VideoBatch.Tasks.Sdk.csproj" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)\VideoBatchApp\bin\$(Configuration)\$(TargetFramework)\Tasks\&quot; /Y /I" />
+  </Target>
+
+</Project>

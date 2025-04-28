@@ -59,5 +59,9 @@ namespace VideoBatch.Services
             _logger.LogInformation("Updating project state");
             // In a real implementation, this would persist changes to a database or file
         }
+
+        // Method removed during rollback
+        // public Task AddTaskToJobAsync(Job parentJob, JobTask newTask)
+        // { ... }
     }
 } 
