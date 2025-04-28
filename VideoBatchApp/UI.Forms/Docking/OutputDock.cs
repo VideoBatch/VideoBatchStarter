@@ -56,20 +56,41 @@ namespace VideoBatch.UI.Forms.Docking
         // Method to append log messages (thread-safe)
         public void AppendLog(string message)
         {
+            // DIAGNOSTIC REMOVED
+            // Debug.WriteLine($"[OutputDock.AppendLog] Called. IsHandleCreated: {this.IsHandleCreated}, logTextBox.IsHandleCreated: {logTextBox.IsHandleCreated}, scrollPanel.IsHandleCreated: {scrollPanel.IsHandleCreated}, logTextBox.InvokeRequired: {logTextBox.InvokeRequired}");
+
             if (logTextBox.InvokeRequired)
             {
-                logTextBox.Invoke(new Action<string>(AppendLog), message);
+                // Debug.WriteLine("[OutputDock.AppendLog] Invoking..."); // DIAGNOSTIC REMOVED
+                try
+                {
+                    logTextBox.Invoke(new Action<string>(AppendLog), message);
+                }
+                catch (Exception ex)
+                {
+                     // Debug.WriteLine($"[OutputDock.AppendLog] Exception during Invoke: {ex.Message}"); // DIAGNOSTIC REMOVED
+                     System.Diagnostics.Debug.WriteLine($"[OutputDock] Exception during Invoke: {ex.Message}"); // Keep minimal debug for errors
+                }
             }
             else
             {
-                // Append text
-                logTextBox.AppendText(message + Environment.NewLine);
+                // Debug.WriteLine("[OutputDock.AppendLog] Executing directly..."); // DIAGNOSTIC REMOVED
+                try
+                {
+                    // Append text
+                    logTextBox.AppendText(message + Environment.NewLine);
 
-                // Auto-scroll the PANEL to the bottom
-                // Requires panel to be focused or manual scrolling
-                // A common trick is to set AutoScrollPosition after update
-                scrollPanel.AutoScrollPosition = new Point(0, scrollPanel.VerticalScroll.Maximum);
-                // Might need refinement based on how AcrylicPanel handles AutoScroll update
+                    // Auto-scroll the PANEL to the bottom
+                    if (scrollPanel.VerticalScroll.Visible && scrollPanel.VerticalScroll.Maximum > scrollPanel.ClientSize.Height)
+                    {
+                         scrollPanel.AutoScrollPosition = new Point(0, scrollPanel.VerticalScroll.Maximum - scrollPanel.ClientSize.Height);
+                    }
+                }
+                catch (Exception ex)
+                {                     
+                    // Debug.WriteLine($"[OutputDock.AppendLog] Exception during direct execution: {ex.Message}"); // DIAGNOSTIC REMOVED
+                    System.Diagnostics.Debug.WriteLine($"[OutputDock] Exception during direct execution: {ex.Message}"); // Keep minimal debug for errors
+                } 
             }
         }
     }

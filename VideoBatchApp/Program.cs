@@ -48,16 +48,9 @@ namespace VideoBatchApp
 
             using (ServiceProvider serviceProvider = services.BuildServiceProvider())
             {
-                // --- Connect OutputDockLoggerProvider ---
-                var outputDock = serviceProvider.GetRequiredService<OutputDock>();
-                var outputDockLoggerProvider = serviceProvider.GetRequiredService<OutputDockLoggerProvider>();
-                outputDockLoggerProvider.OutputDockInstance = outputDock;
-                outputDock?.AppendLog("--- Direct Append Test: OutputDock linked successfully ---");
-                // -----------------------------------------
-
                 // Discover tasks early
                 var taskDiscovery = serviceProvider.GetService<ITaskDiscoveryService>();
-                taskDiscovery?.DiscoverTasks(); // Call the discovery method
+                taskDiscovery?.DiscoverTasks();
 
                 var htmlService = serviceProvider.GetService<IHtmlTemplateService>();
                 if (htmlService != null)
@@ -69,9 +62,7 @@ namespace VideoBatchApp
                    Console.WriteLine("Warning: IHtmlTemplateService not registered or resolved.");
                 }
 
-                var form = serviceProvider
-                    .GetRequiredService<VideoBatchForm>()
-                    ;
+                var form = serviceProvider.GetRequiredService<VideoBatchForm>();
                 Application.Run(form);
             }
         }
@@ -89,11 +80,9 @@ namespace VideoBatchApp
                  loggingBuilder.ClearProviders();
                  loggingBuilder.AddConfiguration(Configuration.GetSection("Logging"));
                  loggingBuilder.AddConsole();
-                 // --- Add the custom provider ---
-                 // Build temporary provider to get the singleton instance
-                 using var tempProvider = services.BuildServiceProvider();
+                 // Add the provider (it no longer needs the OutputDock instance directly)
+                 using var tempProvider = services.BuildServiceProvider(); 
                  loggingBuilder.AddProvider(tempProvider.GetRequiredService<OutputDockLoggerProvider>());
-                 // -------------------------------
              });
 
             services.Configure<HtmlTemplateOptions>(Configuration.GetSection(HtmlTemplateOptions.Position));

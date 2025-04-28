@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 using VideoBatch.UI.Forms.Docking; // Assuming OutputDock is here
+// using System.Diagnostics; // Removed for Debug.WriteLine
 
 namespace VideoBatch.Logging
 {
@@ -9,7 +10,7 @@ namespace VideoBatch.Logging
         private readonly string _categoryName;
         private readonly OutputDockLoggerProvider _provider;
 
-        // Constructor requires provider and category name
+        // Constructor requires provider and category name (will be updated later for queue service)
         public OutputDockLogger(string categoryName, OutputDockLoggerProvider provider)
         {
             _categoryName = categoryName;
@@ -33,14 +34,6 @@ namespace VideoBatch.Logging
                 return;
             }
 
-            // Ensure we have the OutputDock instance
-            if (_provider.OutputDockInstance == null)
-            {
-                // Optionally log to debug console if the dock isn't ready
-                // System.Diagnostics.Debug.WriteLine("OutputDockLogger: OutputDock instance not available.");
-                return;
-            }
-
             // Format the message
             var message = formatter(state, exception);
             var logEntry = $"[{logLevel.ToString().ToUpper().Substring(0,4)}] [{_categoryName}] {message}";
@@ -49,9 +42,8 @@ namespace VideoBatch.Logging
                 logEntry += $"{Environment.NewLine}Exception: {exception}"; // Simple exception logging
             }
 
-            // Send the formatted message to the OutputDock's AppendLog method
-            // AppendLog is already thread-safe
-            _provider.OutputDockInstance.AppendLog(logEntry);
+            // TODO: Enqueue the logEntry to the Queue Service instead
+            // _provider.OutputDockInstance.AppendLog(logEntry); // REMOVED
         }
     }
 } 
