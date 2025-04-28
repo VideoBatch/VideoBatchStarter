@@ -527,6 +527,8 @@ namespace VideoBatch.UI.Forms
         protected override async void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
+            _logger.LogInformation("--- TEST: UI Initialized Log ---"); // Added for OutputDock diagnostics
+
             // Hook up to DockPanel events
             DockPanel.ContentRemoved += DockPanel_ContentRemoved;
             // Populate recent files on initial load

@@ -52,6 +52,7 @@ namespace VideoBatchApp
                 var outputDock = serviceProvider.GetRequiredService<OutputDock>();
                 var outputDockLoggerProvider = serviceProvider.GetRequiredService<OutputDockLoggerProvider>();
                 outputDockLoggerProvider.OutputDockInstance = outputDock;
+                outputDock?.AppendLog("--- Direct Append Test: OutputDock linked successfully ---");
                 // -----------------------------------------
 
                 // Discover tasks early
