@@ -84,7 +84,7 @@ A Windows Forms application for batch video processing, built with .NET 9.0 and 
 
 - **Output Window** - ✅ Implemented
   - Toggles the Output Window visibility
-  - Shows processing logs and status
+  - Shows processing logs and status messages from the application. Useful for seeing what the app is doing or if errors occur.
   - Supports docking, floating, and closing
   - Menu state syncs with panel visibility
 
