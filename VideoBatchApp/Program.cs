@@ -9,7 +9,7 @@ using VideoBatch.UI.Controls;
 using VideoBatch.UI.Forms;
 using VideoBatch.UI.Forms.Docking;
 using VideoBatchApp;
-
+using VideoBatch.Logging;
 
 /* TODO : Short Roadmap of non-critical nice to have tsks
  * Setup Host Builder to load appsettings/Environment variables/User Secrets
@@ -48,6 +48,12 @@ namespace VideoBatchApp
 
             using (ServiceProvider serviceProvider = services.BuildServiceProvider())
             {
+                // --- Connect OutputDockLoggerProvider ---
+                var outputDock = serviceProvider.GetRequiredService<OutputDock>();
+                var outputDockLoggerProvider = serviceProvider.GetRequiredService<OutputDockLoggerProvider>();
+                outputDockLoggerProvider.OutputDockInstance = outputDock;
+                // -----------------------------------------
+
                 // Discover tasks early
                 var taskDiscovery = serviceProvider.GetService<ITaskDiscoveryService>();
                 taskDiscovery?.DiscoverTasks(); // Call the discovery method
@@ -73,10 +79,20 @@ namespace VideoBatchApp
         {
             services.AddSingleton(Configuration);
 
+            // --- Register OutputDock Logger Components ---
+            services.AddSingleton<OutputDock>();
+            services.AddSingleton<OutputDockLoggerProvider>();
+            // -------------------------------------------
+
             services.AddLogging(loggingBuilder => {
                  loggingBuilder.ClearProviders();
                  loggingBuilder.AddConfiguration(Configuration.GetSection("Logging"));
                  loggingBuilder.AddConsole();
+                 // --- Add the custom provider ---
+                 // Build temporary provider to get the singleton instance
+                 using var tempProvider = services.BuildServiceProvider();
+                 loggingBuilder.AddProvider(tempProvider.GetRequiredService<OutputDockLoggerProvider>());
+                 // -------------------------------
              });
 
             services.Configure<HtmlTemplateOptions>(Configuration.GetSection(HtmlTemplateOptions.Position));
@@ -93,10 +109,8 @@ namespace VideoBatchApp
                 .AddScoped<IProjectServices, ProjectServices>()
                 .AddScoped<AssetsDock>()
                 .AddScoped<TaskExplorerDock>()
-                .AddScoped<OutputDock>()
                 .AddTransient(sp => sp.GetRequiredService<ILoggerFactory>().CreateLogger<AssetsDock>())
                 .AddTransient(sp => sp.GetRequiredService<ILoggerFactory>().CreateLogger<TaskExplorerDock>())
-                .AddTransient(sp => sp.GetRequiredService<ILoggerFactory>().CreateLogger<OutputDock>())
                 .AddTransient(sp => sp.GetRequiredService<ILoggerFactory>().CreateLogger<SettingsForm>())
                 ;
         }
