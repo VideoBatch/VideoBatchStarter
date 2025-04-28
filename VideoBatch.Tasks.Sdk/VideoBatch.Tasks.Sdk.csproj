@@ -11,4 +11,8 @@
     <ProjectReference Include="..\VideoBatch.Tasks.Interfaces\VideoBatch.Tasks.Interfaces.csproj" />
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="    xcopy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)\VideoBatchApp\bin\$(Configuration)\$(TargetFramework)\Tasks\&quot; /Y /I" />
+  </Target>
+
 </Project>

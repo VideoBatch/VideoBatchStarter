@@ -4,6 +4,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoBatchApp", "VideoBatchApp\VideoBatchApp.csproj", "{BFFEB2A8-21D9-4211-B624-3ABD64F5591F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0B9D23B1-02B8-4CF3-89A3-EB8AC4B1D784} = {0B9D23B1-02B8-4CF3-89A3-EB8AC4B1D784}
+		{76CACC31-D5DE-4E12-84C6-C1942732C678} = {76CACC31-D5DE-4E12-84C6-C1942732C678}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoBatch.Model", "VideoBatch.Model\VideoBatch.Model.csproj", "{31E579EC-2A9F-4B49-995D-8C62DA6D2B65}"
 EndProject
@@ -60,5 +64,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {19D7EF7A-7E9C-457C-A227-FB5CADD4FF87}
 	EndGlobalSection
 EndGlobal
